@@ -26,7 +26,17 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.struct_field, $.parameter, $.variadic_parameter],
-    [$.enum_case, $.parameter]
+    [$.enum_case, $.parameter],
+    [$.struct_definition, $.enum_definition],
+    [$.struct_definition, $.enum_definition, $.function_definition],
+    [$.variable_declaration, $.constant_declaration],
+    [$.struct_type, $.enum_type],
+    [$.parameter, $.variadic_parameter, $.expression, $.struct_expression, $.enum_expression],
+    [$.parenthesized_expression, $.tuple_expression, $.struct_field_init],
+    [$.loop_statement, $.expression],
+    [$.type, $.variadic_parameter],
+    [$.tuple_type, $.enum_case],
+    [$.call_expression, $.index_access]
   ],
 
   rules: {
@@ -109,13 +119,13 @@ module.exports = grammar({
     ),
 
     // Struct definition
-    struct_definition: $ => seq(
+    struct_definition: $ => prec(PREC.STRUCT, seq(
       optional($.visibility),
       $.identifier,
       '(',
       optional(commaSep($.struct_field)),
       ')'
-    ),
+    )),
 
     visibility: $ => choice('+', '-'),
 
@@ -125,13 +135,13 @@ module.exports = grammar({
     )),
 
     // Enum definition
-    enum_definition: $ => seq(
+    enum_definition: $ => prec(PREC.ENUM, seq(
       optional($.visibility),
       $.identifier,
       '(',
       repeat($.enum_case),
       ')'
-    ),
+    )),
 
     enum_case: $ => choice(
       seq($.identifier, '(', optional(commaSep($.type)), ')'),
@@ -149,7 +159,7 @@ module.exports = grammar({
       $.block
     ),
 
-    parameter: $ => prec(PREC.FIELD_DEF, choice(
+    parameter: $ => prec(PREC.FIELD_DEF + 1, choice(
       seq($.identifier, $.type),
       seq($.identifier, $.type, '=', $.expression),
       $.variadic_parameter
@@ -327,13 +337,13 @@ module.exports = grammar({
 
     comptime_expression: $ => seq('#', $.expression),
 
-    interpolation: $ => seq(
+    interpolation: $ => prec.left(seq(
       $.string_literal,
       '\\(',
       $.expression,
       ')',
       optional($.string_literal)
-    ),
+    )),
 
     parenthesized_expression: $ => seq('(', $.expression, ')'),
 
@@ -343,11 +353,11 @@ module.exports = grammar({
 
     rune_literal: $ => /'([^'\\]|\\.)'/,
 
-    tuple_expression: $ => seq(
+    tuple_expression: $ => prec(PREC.CALL, seq(
       '(',
       commaSep($.expression),
       ')'
-    ),
+    )),
 
     struct_expression: $ => prec(PREC.STRUCT, seq(
       optional($.identifier),
@@ -356,10 +366,10 @@ module.exports = grammar({
       ')'
     )),
 
-    struct_field_init: $ => choice(
+    struct_field_init: $ => prec(PREC.FIELD_DEF, choice(
       seq($.identifier, ':', $.expression),
       $.expression
-    ),
+    )),
 
     enum_expression: $ => prec(PREC.ENUM, seq(
       $.identifier,

@@ -1,0 +1,33 @@
+{
+  "grammars": [
+    {
+      "name": "atom",
+      "camelcase": "Atom",
+      "scope": "source.atom",
+      "path": ".",
+      "file-types": [
+        "atom"
+      ],
+      "highlights": "queries/highlights.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for Atom programming language",
+    "authors": [
+      "Atom Language Team"
+    ],
+    "links": {
+      "repository": "https://github.com/sst/atom-lang"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
