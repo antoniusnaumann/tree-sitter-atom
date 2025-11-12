@@ -135,6 +135,7 @@ module.exports = grammar({
     enum_definition: $ => prec(PREC.ENUM, seq(
       optional($.visibility),
       $.identifier,
+      optional(seq('(', commaSep($.type_parameter), ';')),
       '(',
       repeat($.enum_case),
       ')'
@@ -150,6 +151,7 @@ module.exports = grammar({
       optional($.visibility),
       $.identifier,
       '(',
+      optional(seq(commaSep($.type_parameter), ';')),
       optional(commaSep($.parameter)),
       ')',
       optional($.return_type),
@@ -250,6 +252,7 @@ module.exports = grammar({
       $.call_expression,
       $.method_call,
       $.field_access,
+      $.namespace_access,
       $.index_access,
       $.interpolation,
       $.tuple_expression,
@@ -321,6 +324,12 @@ module.exports = grammar({
     field_access: $ => prec(PREC.FIELD, seq(
       $.expression,
       '.',
+      $.identifier
+    )),
+
+    namespace_access: $ => prec(PREC.FIELD + 1, seq(
+      $.expression,
+      '::',
       $.identifier
     )),
 

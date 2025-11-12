@@ -172,6 +172,10 @@
           "named": true
         },
         {
+          "type": "type_parameter",
+          "named": true
+        },
+        {
           "type": "visibility",
           "named": true
         }
@@ -243,6 +247,10 @@
         },
         {
           "type": "method_call",
+          "named": true
+        },
+        {
+          "type": "namespace_access",
           "named": true
         },
         {
@@ -328,6 +336,10 @@
         },
         {
           "type": "return_type",
+          "named": true
+        },
+        {
+          "type": "type_parameter",
           "named": true
         },
         {
@@ -468,6 +480,25 @@
   },
   {
     "type": "method_call",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "namespace_access",
     "named": true,
     "fields": {},
     "children": {
@@ -1026,6 +1057,10 @@
   },
   {
     "type": ":",
+    "named": false
+  },
+  {
+    "type": "::",
     "named": false
   },
   {

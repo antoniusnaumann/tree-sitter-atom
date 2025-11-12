@@ -41,65 +41,65 @@
 
 ; Struct fields
 (struct_field
-  (identifier) @variable.member)
+  (identifier) @property)
 
 ; Enum cases
 (enum_case
   (identifier) @constructor)
 
- ; Operators
- [
-   "+"
-   "-"
-   "*"
-   "/"
-   "%"
-   "=="
-   "!="
-   "<"
-   "<="
-   ">"
-   ">="
-   "&&"
-   "||"
-   "!"
-   "~"
-   "&"
-   "|"
-   "<<"
-   ">>"
-   "="
-   "+="
-   "-="
-   "*="
-   "/="
-   "%="
-   "<<="
-   ">>="
-   "|="
-   "&="
-   "++="
-   "++"
- ] @operator
+; Operators
+[
+  "+"
+  "-"
+  "*"
+  "/"
+  "%"
+  "=="
+  "!="
+  "<"
+  "<="
+  ">"
+  ">="
+  "&&"
+  "||"
+  "!"
+  "~"
+  "&"
+  "|"
+  "<<"
+  ">>"
+  "="
+  "+="
+  "-="
+  "*="
+  "/="
+  "%="
+  "<<="
+  ">>="
+  "|="
+  "&="
+  "++="
+  "++"
+] @operator
 
 ; Literals
 (number_literal) @number
 
 (string_literal) @string
 
-(rune_literal) @string.special
+(rune_literal) @character
 
- ; Punctuation
- [
-   "("
-   ")"
-   "{"
-   "}"
-   ","
-   ";"
-   ":"
-   "."
- ] @punctuation.delimiter
+; Punctuation
+[
+  "("
+  ")"
+  "{"
+  "}"
+  ","
+  ";"
+  ":"
+  "."
+] @punctuation.delimiter
 
 ; Brackets
 [
@@ -110,7 +110,7 @@
 ] @punctuation.bracket
 
 ; Visibility modifiers
-(visibility) @keyword.modifier
+(visibility) @attribute
 
 ; Comptime expressions
 (comptime_expression
@@ -127,16 +127,17 @@
 ; Field access
 (field_access
   "." @punctuation.delimiter
-  (identifier) @variable.member)
+  (identifier) @property)
+
+; Namespace access
+(namespace_access
+  "::" @punctuation.delimiter
+  (identifier) @namespace)
 
 ; Method calls
 (method_call
   "." @punctuation.delimiter
   (identifier) @function.method)
-
- ; Function calls
- ; (call_expression
- ;   (identifier) @function.call)
 
 ; Type annotations
 (type) @type
@@ -144,6 +145,10 @@
 ; Generic types
 (generic_type
   (identifier) @type)
+
+; Type parameters
+(type_parameter
+  (identifier) @type.parameter)
 
 ; Tuple types
 (tuple_type) @type
@@ -153,14 +158,6 @@
 
 ; Variadic types
 (variadic_type) @type
-
- ; Struct expressions
- ; (struct_expression
- ;   (identifier)? @type)
- 
- ; Enum expressions
- ; (enum_expression
- ;   (identifier) @constructor)
 
 ; Closures
 (closure) @keyword.function
@@ -172,12 +169,6 @@
 ; Wildcard pattern
 (pattern
   "_" @variable.builtin)
-
- ; Boolean literals (implemented as enums)
- ; [
- ;   "True"
- ;   "False"
- ; ] @constant.builtin
 
 ; Special identifiers
 (identifier) @variable
