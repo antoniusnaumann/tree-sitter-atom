@@ -47,41 +47,40 @@
 (enum_case
   (identifier) @constructor)
 
-; Operators
-[
-  "+"
-  "-"
-  "*"
-  "/"
-  "%"
-  "=="
-  "!="
-  "<"
-  "<="
-  ">"
-  ">="
-  "&&"
-  "||"
-  "!"
-  "~"
-  "&"
-  "|"
-  "^"
-  "<<"
-  ">>"
-  "="
-  "+="
-  "-="
-  "*="
-  "/="
-  "%="
-  "<<="
-  ">>="
-  "|="
-  "&="
-  "++="
-  "++"
-] @operator
+ ; Operators
+ [
+   "+"
+   "-"
+   "*"
+   "/"
+   "%"
+   "=="
+   "!="
+   "<"
+   "<="
+   ">"
+   ">="
+   "&&"
+   "||"
+   "!"
+   "~"
+   "&"
+   "|"
+   "<<"
+   ">>"
+   "="
+   "+="
+   "-="
+   "*="
+   "/="
+   "%="
+   "<<="
+   ">>="
+   "|="
+   "&="
+   "++="
+   "++"
+ ] @operator
 
 ; Literals
 (number_literal) @number
@@ -90,19 +89,17 @@
 
 (rune_literal) @string.special
 
-; Punctuation
-[
-  "("
-  ")"
-  "{"
-  "}"
-  "["
-  "]"
-  ","
-  ";"
-  ":"
-  "."
-] @punctuation.delimiter
+ ; Punctuation
+ [
+   "("
+   ")"
+   "{"
+   "}"
+   ","
+   ";"
+   ":"
+   "."
+ ] @punctuation.delimiter
 
 ; Brackets
 [
@@ -137,9 +134,9 @@
   "." @punctuation.delimiter
   (identifier) @function.method)
 
-; Function calls
-(call_expression
-  (identifier) @function.call)
+ ; Function calls
+ ; (call_expression
+ ;   (identifier) @function.call)
 
 ; Type annotations
 (type) @type
@@ -157,13 +154,13 @@
 ; Variadic types
 (variadic_type) @type
 
-; Struct expressions
-(struct_expression
-  (identifier)? @type)
-
-; Enum expressions
-(enum_expression
-  (identifier) @constructor)
+ ; Struct expressions
+ ; (struct_expression
+ ;   (identifier)? @type)
+ 
+ ; Enum expressions
+ ; (enum_expression
+ ;   (identifier) @constructor)
 
 ; Closures
 (closure) @keyword.function
@@ -176,11 +173,11 @@
 (pattern
   "_" @variable.builtin)
 
-; Boolean literals (if they exist as keywords)
-[
-  "True"
-  "False"
-] @constant.builtin
+ ; Boolean literals (implemented as enums)
+ ; [
+ ;   "True"
+ ;   "False"
+ ; ] @constant.builtin
 
 ; Special identifiers
 (identifier) @variable

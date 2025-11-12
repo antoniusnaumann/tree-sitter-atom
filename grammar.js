@@ -29,8 +29,6 @@ module.exports = grammar({
   externals: $ => [],
 
   conflicts: $ => [
-    [$.struct_field, $.parameter, $.variadic_parameter],
-    [$.enum_case, $.parameter],
     [$.struct_definition, $.enum_definition],
     [$.variable_declaration, $.constant_declaration],
     [$.struct_type, $.enum_type],
@@ -94,18 +92,18 @@ module.exports = grammar({
 
     enum_type: $ => $.identifier,
 
-    tuple_type: $ => seq(
+    tuple_type: $ => prec(PREC.TYPE, seq(
       '(',
       commaSep($.type),
       ')'
-    ),
+    )),
 
-    generic_type: $ => seq(
+    generic_type: $ => prec(PREC.TYPE + 3, seq(
       $.identifier,
       '(',
       commaSep($.type_parameter),
       ')'
-    ),
+    )),
 
     type_parameter: $ => choice(
       $.type,
@@ -158,26 +156,27 @@ module.exports = grammar({
       $.block
     ),
 
-    parameter: $ => prec(PREC.FIELD_DEF + 1, choice(
+    parameter: $ => prec(PREC.TYPE, choice(
       seq($.identifier, $.type),
       seq($.identifier, $.type, '=', $.expression),
       $.variadic_parameter
     )),
 
-    variadic_parameter: $ => seq(
+    variadic_parameter: $ => prec(PREC.TYPE, seq(
       $.identifier,
       $.variadic_type
-    ),
+    )),
 
     return_type: $ => $.type,
 
     // Variable declaration
-    variable_declaration: $ => seq(
+    variable_declaration: $ => prec(PREC.DECLARATION, seq(
       $.identifier,
-      optional(seq(':', $.type)),
-      choice('=', ':='),
-      $.expression
-    ),
+      choice(
+        seq(':', $.type, '=', $.expression),
+        seq(':=', $.expression)
+      )
+    )),
 
     // Constant declaration
     constant_declaration: $ => seq(
@@ -208,7 +207,7 @@ module.exports = grammar({
     return_statement: $ => seq('return', optional($.expression), ';'),
 
     // Loop
-    loop_statement: $ => seq(
+    loop_statement: $ => prec(PREC.DECLARATION, seq(
       'loop',
       optional(choice(
         $.expression,
@@ -216,7 +215,7 @@ module.exports = grammar({
         seq('(', $.number_literal, ')')
       )),
       $.block
-    ),
+    )),
 
     // Match
     match_statement: $ => seq(
@@ -254,8 +253,6 @@ module.exports = grammar({
       $.index_access,
       $.interpolation,
       $.tuple_expression,
-      $.struct_expression,
-      $.enum_expression,
       $.closure,
       $.block,
       $.parenthesized_expression,
@@ -263,6 +260,12 @@ module.exports = grammar({
       $.number_literal,
       $.string_literal,
       $.rune_literal
+    ),
+
+    // Constructor expressions (handled separately)
+    constructor_expression: $ => choice(
+      $.struct_expression,
+      $.enum_expression
     ),
 
     binary_expression: $ => choice(
@@ -354,23 +357,26 @@ module.exports = grammar({
 
     tuple_expression: $ => prec(PREC.CALL, seq(
       '(',
-      commaSep($.expression),
+      commaSep(choice(
+        seq($.identifier, ':', $.expression),
+        $.expression
+      )),
       ')'
     )),
 
-    struct_expression: $ => prec(PREC.STRUCT, seq(
-      optional($.identifier),
+    struct_expression: $ => prec.left(PREC.TYPE + 2, seq(
+      $.identifier,
       '(',
       optional(commaSep($.struct_field_init)),
       ')'
     )),
 
-    struct_field_init: $ => prec(PREC.FIELD_DEF, choice(
+    struct_field_init: $ => choice(
       seq($.identifier, ':', $.expression),
       $.expression
-    )),
+    ),
 
-    enum_expression: $ => prec(PREC.ENUM, seq(
+    enum_expression: $ => prec.left(PREC.TYPE + 2, seq(
       $.identifier,
       optional(seq('(', optional(commaSep($.expression)), ')'))
     )),
