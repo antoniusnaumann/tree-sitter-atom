@@ -263,6 +263,7 @@ module.exports = grammar({
       $.binary_expression,
       $.unary_expression,
       $.call_expression,
+      $.member_match_expression,
       $.method_call,
       $.field_access,
       $.namespace_access,
@@ -334,6 +335,17 @@ module.exports = grammar({
       '(',
       optional(commaSep($.expression)),
       ')'
+    )),
+
+    member_match_expression: $ => prec(PREC.CALL, seq(
+      $.expression,
+      '.',
+      'match',
+      '(',
+      ')',
+      '{',
+      commaSep($.match_arm),
+      '}'
     )),
 
     field_access: $ => prec(PREC.FIELD, seq(

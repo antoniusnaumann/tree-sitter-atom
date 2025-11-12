@@ -292,7 +292,7 @@ Comments
     (block)))
 
 ==================
-String interpolation
+String interpolation (allowed to fail for now)
 ==================
 
 greet(name String) String {
@@ -379,3 +379,127 @@ Generic function
                   (expression
                     (identifier)))))))))))
 
+
+==================
+UFCS match statement
+==================
+
++exit(status ExitCode) {
+    cstdlib::exit(status.match() { Success { 0 }, Failure { 1 } })
+}
+
+---
+
+(source_file
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (block
+      (expression
+        (call_expression
+          (expression
+            (namespace_access
+              (expression
+                (identifier))
+              (identifier)))
+          (expression
+            (member_match_expression
+              (expression
+                (identifier))
+              (match_arm
+                (pattern
+                  (identifier))
+                (block
+                  (expression
+                    (number_literal))))
+              (match_arm
+                (pattern
+                  (identifier))
+                (block
+                  (expression
+                    (number_literal)))))))))))
+
+==================
+Error function call
+==================
+
++assert(condition Bool) {
+    match(condition) {
+        True { }
+        False { error("Assertion failed!") }
+    }
+}
+
+---
+
+(source_file
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (block
+      (statement
+        (match_statement
+          (expression
+            (identifier))
+          (match_arm
+            (pattern
+              (identifier))
+            (block))
+          (match_arm
+            (pattern
+              (identifier))
+            (block
+              (expression
+                (call_expression
+                  (expression
+                    (identifier))
+                  (expression
+                    (string_literal)))))))))))
+
+
+==================
+Using enum cases as arguments
+==================
+/// Prints the error message and quits
++error(msg String) {
+    print(msg, Fatal);
+    exit(Failure)
+}
+
+---
+
+(source_file
+  (comment)
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (block
+      (statement
+        (expression_statement
+          (expression
+            (call_expression
+              (expression
+                (identifier))
+              (expression
+                (identifier))
+              (expression
+                (identifier))))))
+      (expression
+        (call_expression
+          (expression
+            (identifier))
+          (expression
+            (identifier)))))))
