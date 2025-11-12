@@ -1,0 +1,31 @@
+{
+  "name": "tree-sitter-atom",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Atom programming language",
+  "main": "bindings/node",
+  "scripts": {
+    "test": "tree-sitter test",
+    "test:generate": "tree-sitter generate && tree-sitter test"
+  },
+  "keywords": [
+    "tree-sitter",
+    "parser",
+    "atom",
+    "programming-language"
+  ],
+  "author": "Atom Language Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.8"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.atom",
+      "file-types": [
+        "atom"
+      ],
+      "highlights": "queries/highlights.scm"
+    }
+  ]
+}

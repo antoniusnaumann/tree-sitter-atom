@@ -1,0 +1,203 @@
+; Basic function definition
++add(a Int, b Int) Int {
+    a + b
+}
+
+; Struct definition
++Point(x Float, y Float)
+
+; Enum definition
++Result(t, e = String;
+    Ok(t)
+    Err(e)
+)
+
+; Variable declaration
+main() {
+    p := Point(x: 1.0, y: 2.0)
+    result := add(1, 2)
+    result.print()
+}
+
+; Match statement
+fib(n Int) Int {
+    match(n) {
+        0 { 0 }
+        1 { 1 }
+        _ { fib(n - 1) + fib(n - 2) }
+    }
+}
+
+; Loop statement
+sum(values Int*) Int {
+    total := 0
+    loop(values) {
+        total += $0
+    }
+    total
+}
+
+; Test block
+"Basic arithmetic" {
+    assert(add(2, 3) == 5)
+}
+
+; Comments
+/// This is a doc comment
+// This is a regular comment
+
+; String interpolation
+greet(name String) String {
+    "Hello, \(name)!"
+}
+
+; Generic function
++unwrap(op Option(t), msg String = "Unwrapped empty optional") t {
+    match(op) {
+        Some(inner) { inner }
+        None { error(msg) }
+    }
+}
+
+; Closure
+double_all(items Int*) Int* {
+    items.loop() {
+        $0 * 2
+    }
+}
+
+; Method call
+main() {
+    values := (1, 2, 3, 4)
+    doubled := double_all(values)
+    doubled(0).print()
+}
+
+; Comptime evaluation
+PI = #3.14159
+
+; Import statement
+math::*
+
+; Constant declaration
+MAX_SIZE = 100
+
+; Visibility modifiers
+-PrivateStruct(hidden String)
++PublicStruct(visible String)
+
+; Variadic parameters
++concat(strings String*) String {
+    result := ""
+    loop(strings) {
+        result ++= $0
+    }
+    result
+}
+
+; Assignment operators
+main() {
+    x := 5
+    x += 3
+    x *= 2
+    x
+}
+
+; Unary operators
+negate(x Int) Int {
+    -x
+}
+
+; Binary operators
+compare(a Int, b Int) Bool {
+    a < b && a > 0 || b == 0
+}
+
+; Parenthesized expressions
+complex_calc(a Int, b Int, c Int) Int {
+    (a + b) * c - (a / b)
+}
+
+; Tuple expressions
+pair() (Int, Int) {
+    (42, 24)
+}
+
+; Struct field access
+main() {
+    point := Point(x: 3.14, y: 2.71)
+    x_coord := point.x
+    y_coord := point.y
+}
+
+; Index access
+main() {
+    tuple := (10, 20, 30)
+    first := tuple(0)
+    second := tuple(1)
+}
+
+; Enum expressions
+main() {
+    success := Result(Int; Ok(42))
+    failure := Result(Int; Err("Something went wrong"))
+}
+
+; Sized types
+main() {
+    big_int: Int(64) = 9223372036854775807
+    small_float: Float(32) = 3.14
+}
+
+; Generic types
++Container(t Type; item t)
+
+; Type parameters with defaults
++Result(t, e = String;
+    Ok(t)
+    Err(e)
+)
+
+; Struct inheritance
+Vec2(x Float, y Float)
+Vec3(..Vec2, z Float)
+
+; Loop with count
+repeat_message(msg String, count Int) {
+    loop(count) {
+        msg.print()
+    }
+}
+
+; Loop over collection
+sum_all(numbers Int*) Int {
+    total := 0
+    loop(numbers) {
+        total += $0
+    }
+    total
+}
+
+; Return statement
+early_return(x Int) Int {
+    if x < 0 {
+        return 0
+    }
+    x * 2
+}
+
+; Expression statement
+main() {
+    compute_value(5);
+    "Done".print()
+}
+
+; Block expression
+main() {
+    result := {
+        x := 10
+        y := 20
+        x + y
+    }
+    result.print()
+}
