@@ -1,4 +1,4 @@
-; Helix highlight queries for Atom programming language
+; Highlight queries for Atom programming language
 
 ; Comments
 (comment) @comment
@@ -29,11 +29,12 @@
 (parameter
   (identifier) @variable.parameter)
 
-(variadic_parameter
-  (identifier) @variable.parameter)
-
 ; Struct fields
 (struct_field
+  (identifier) @property)
+
+; Struct field initialization
+(struct_field_init
   (identifier) @property)
 
 ; Enum cases
@@ -82,6 +83,9 @@
 
 (rune_literal) @character
 
+; Loop variables
+(loop_variable) @variable.builtin
+
 ; Punctuation
 [
   "("
@@ -92,6 +96,7 @@
   ";"
   ":"
   "."
+  "::"
 ] @punctuation.delimiter
 
 ; Brackets
@@ -132,6 +137,11 @@
   "." @punctuation.delimiter
   (identifier) @function.method)
 
+; Call expressions - highlight function name
+(call_expression
+  (expression
+    (identifier) @function.call))
+
 ; Type annotations
 (type) @type
 
@@ -152,21 +162,18 @@
 ; Variadic types
 (variadic_type) @type
 
-; Closures
-(closure) @keyword.function
-
 ; Match patterns
 (pattern
-  (identifier) @variable)
+  (identifier) @variable.parameter)
 
 ; Wildcard pattern
 (pattern
-  "_" @variable.builtin)
-
-; Special identifiers
-(identifier) @variable
+  "_" @constant.builtin)
 
 ; String interpolation
-(interpolation
+(interpolated_string
   "\\(" @punctuation.special
   ")" @punctuation.special)
+
+; Special identifiers (fallback - should be last)
+(identifier) @variable
