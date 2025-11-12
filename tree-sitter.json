@@ -16,7 +16,9 @@
     "license": "MIT",
     "description": "Tree-sitter grammar for Atom programming language",
     "authors": [
-      "Atom Language Team"
+      {
+        "name": "Atom Language Team"
+      }
     ],
     "links": {
       "repository": "https://github.com/sst/atom-lang"
