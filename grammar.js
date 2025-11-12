@@ -29,10 +29,7 @@ module.exports = grammar({
   externals: $ => [],
 
   conflicts: $ => [
-    [$.struct_definition, $.enum_definition],
-    [$.variable_declaration, $.constant_declaration],
     [$.struct_type, $.enum_type],
-    [$.parenthesized_expression, $.tuple_expression],
     [$.call_expression, $.index_access]
   ],
 
