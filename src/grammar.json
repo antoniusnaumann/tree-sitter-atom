@@ -421,6 +421,18 @@
                       }
                     ]
                   }
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
                 }
               ]
             },
@@ -484,10 +496,6 @@
               "name": "expression"
             }
           ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "variadic_parameter"
         },
         {
           "type": "SEQ",
@@ -566,35 +574,44 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "CHOICE",
+              "type": "SEQ",
               "members": [
                 {
-                  "type": "SEQ",
+                  "type": "CHOICE",
                   "members": [
                     {
-                      "type": "SYMBOL",
-                      "name": "type_parameter"
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "type_parameter"
+                        },
+                        {
+                          "type": "REPEAT",
+                          "content": {
+                            "type": "SEQ",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": ","
+                              },
+                              {
+                                "type": "SYMBOL",
+                                "name": "type_parameter"
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     },
                     {
-                      "type": "REPEAT",
-                      "content": {
-                        "type": "SEQ",
-                        "members": [
-                          {
-                            "type": "STRING",
-                            "value": ","
-                          },
-                          {
-                            "type": "SYMBOL",
-                            "name": "type_parameter"
-                          }
-                        ]
-                      }
+                      "type": "BLANK"
                     }
                   ]
                 },
                 {
-                  "type": "BLANK"
+                  "type": "STRING",
+                  "value": ";"
                 }
               ]
             },
@@ -602,10 +619,6 @@
               "type": "BLANK"
             }
           ]
-        },
-        {
-          "type": "STRING",
-          "value": ";"
         },
         {
           "type": "REPEAT",
@@ -798,6 +811,18 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
                   }
                 ]
               },
@@ -871,30 +896,9 @@
                   "name": "expression"
                 }
               ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "variadic_parameter"
             }
           ]
         }
-      }
-    },
-    "variadic_parameter": {
-      "type": "PREC",
-      "value": 18,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "identifier"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "variadic_type"
-          }
-        ]
       }
     },
     "return_type": {
@@ -2702,6 +2706,14 @@
     [
       "struct_field_list",
       "function_definition"
+    ],
+    [
+      "_field_or_param",
+      "enum_case"
+    ],
+    [
+      "struct_field_list",
+      "enum_definition"
     ]
   ],
   "precedences": [],

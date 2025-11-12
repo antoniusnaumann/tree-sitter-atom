@@ -1,0 +1,467 @@
+==================
+Enum with type parameters and default
+==================
+
++Result(t, e = String;
+    Ok(t)
+    Err(e)
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (type_parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))))
+
+==================
+Generic enum with single type parameter
+==================
+
++Option(t;
+    Some(t)
+    None
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier))))
+
+==================
+Generic enum with single type parameter
+==================
+
++Option(t;
+    Some(t)
+    None
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier))))
+
+==================
+Generic enum with single type parameter (whitespace)
+==================
+
++Option (t;
+    Some(t)
+    None
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier))))
+
+==================
+Generic enum with implicit type parameter
+==================
+
++Option(
+    Some(t)
+    None
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier))))
+
+==================
+Enum with associated values
+==================
+
++IntOption(
+    Some(Int)
+    None
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (enum_case
+      (identifier)
+      (type
+        (primitive_type)))
+    (enum_case
+      (identifier))))
+
+==================
+Simple enum without type parameters
+==================
+
++LogLevel (
+    Trace
+    Debug
+    Info
+    Warn
+    Error
+    Fatal
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (enum_case
+      (identifier))
+    (enum_case
+      (identifier))
+    (enum_case
+      (identifier))
+    (enum_case
+      (identifier))
+    (enum_case
+      (identifier))
+    (enum_case
+      (identifier))))
+
+==================
+Struct with primitive types
+==================
+
++Point(x Float, y Float)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type)))
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type))))))
+
+==================
+Struct with mixed field types
+==================
+
++Person(
+    name String,
+    age Int,
+    height Float,
+    active Bool
+)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type)))
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type)))
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type)))
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type))))))
+
+==================
+Struct with generic type field
+==================
+
++Container(value Option(Int))
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (generic_type
+            (identifier)
+            (type_parameter
+              (type
+                (primitive_type)))))))))
+
+==================
+Struct with tuple type field
+==================
+
++Pair(values (Int, String))
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (tuple_type
+            (type
+              (primitive_type))
+            (type
+              (primitive_type))))))))
+
+==================
+Struct with sized integer type
+==================
+
++SmallStruct(byte Int(8), word Int(16))
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (sized_type
+            (number_literal))))
+      (struct_field
+        (identifier)
+        (type
+          (sized_type
+            (number_literal)))))))
+
+==================
+Struct with variadic type
+==================
+
++Logger(messages String*)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (variadic_type
+            (type
+              (primitive_type))))))))
+
+==================
+Struct with custom struct type field
+==================
+
++Rectangle(topLeft Point, bottomRight Point)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (struct_type
+            (identifier))))
+      (struct_field
+        (identifier)
+        (type
+          (struct_type
+            (identifier)))))))
+
+==================
+Nested generic types
+==================
+
++Cache(data Option(Result(String, Int)))
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (generic_type
+            (identifier)
+            (type_parameter
+              (type
+                (generic_type
+                  (identifier)
+                  (type_parameter
+                    (type
+                      (primitive_type)))
+                  (type_parameter
+                    (type
+                      (primitive_type))))))))))))
+
+==================
+Private struct definition
+==================
+
+-Internal(data Int)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type))))))
+
+==================
+Struct without visibility modifier
+==================
+
+Config(value String)
+
+---
+
+(source_file
+  (struct_definition
+    (identifier)
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type))))))
+
+==================
+Enum case with multiple type parameters
+==================
+
++Either(a, b;
+    Left(a)
+    Right(b)
+    Both(a, b)
+)
+
+---
+
+(source_file
+  (enum_definition
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier)))
+      (type
+        (struct_type
+          (identifier))))))

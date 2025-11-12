@@ -214,8 +214,8 @@ sum(values Int*) Int {
   (function_definition
     (identifier)
     (parameter
-      (variadic_parameter
-        (identifier)
+      (identifier)
+      (type
         (variadic_type
           (type
             (primitive_type)))))
@@ -378,3 +378,4 @@ Generic function
                     (identifier))
                   (expression
                     (identifier)))))))))))
+

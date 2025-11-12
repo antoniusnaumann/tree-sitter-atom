@@ -32,7 +32,9 @@ module.exports = grammar({
     [$.struct_type, $.enum_type],
     [$.call_expression, $.index_access],
     [$.struct_field, $.parameter],
-    [$.struct_field_list, $.function_definition]
+    [$.struct_field_list, $.function_definition],
+    [$._field_or_param, $.enum_case],
+    [$.struct_field_list, $.enum_definition]
   ],
 
   rules: {
@@ -125,7 +127,8 @@ module.exports = grammar({
       '(',
       optional(seq(
         alias($._field_or_param, $.struct_field),
-        repeat(seq(',', alias($._field_or_param, $.struct_field)))
+        repeat(seq(',', alias($._field_or_param, $.struct_field))),
+        optional(',')
       )),
       ')'
     ),
@@ -135,7 +138,6 @@ module.exports = grammar({
     _field_or_param: $ => choice(
       seq($.identifier, $.type),
       seq($.identifier, $.type, '=', $.expression),
-      $.variadic_parameter,
       seq('..', $.identifier)
     ),
 
@@ -149,8 +151,7 @@ module.exports = grammar({
       optional($.visibility),
       $.identifier,
       '(',
-      optional(commaSep($.type_parameter)),
-      ';',
+      optional(seq(commaSep($.type_parameter), ';')),
       repeat($.enum_case),
       ')'
     ),
@@ -168,7 +169,8 @@ module.exports = grammar({
       optional(seq(commaSep($.type_parameter), ';')),
       optional(seq(
         alias($._field_or_param, $.parameter),
-        repeat(seq(',', alias($._field_or_param, $.parameter)))
+        repeat(seq(',', alias($._field_or_param, $.parameter))),
+        optional(',')
       )),
       ')',
       optional($.return_type),
@@ -177,14 +179,8 @@ module.exports = grammar({
 
     parameter: $ => prec.dynamic(-1, prec(PREC.TYPE, choice(
       seq($.identifier, $.type),
-      seq($.identifier, $.type, '=', $.expression),
-      $.variadic_parameter
+      seq($.identifier, $.type, '=', $.expression)
     ))),
-
-    variadic_parameter: $ => prec(PREC.TYPE, seq(
-      $.identifier,
-      $.variadic_type
-    )),
 
     return_type: $ => $.type,
 
