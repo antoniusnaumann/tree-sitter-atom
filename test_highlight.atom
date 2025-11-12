@@ -1,0 +1,19 @@
+/// Struct definition
++Point(x Float, y Float)
+
+/// Enum definition
++Option(t;
+    Some(t)
+    None
+)
+
+/// Function definition
++add(a Int, b Int) Int {
+    result := a + b
+}
+
+main() {
+    p := Point(x: 1.0, y: 2.0)
+    result := add(1, 2)
+    print(result)
+}

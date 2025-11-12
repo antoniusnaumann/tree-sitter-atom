@@ -47,7 +47,6 @@ module.exports = grammar({
       $.variable_declaration,
       $.constant_declaration,
       $.test_block,
-      $.import_statement,
       $.comment
     ),
 
@@ -212,14 +211,11 @@ module.exports = grammar({
     statement: $ => choice(
       $.variable_declaration,
       $.expression_statement,
-      $.return_statement,
       $.loop_statement,
       $.match_statement
     ),
 
     expression_statement: $ => seq($.expression, ';'),
-
-    return_statement: $ => seq('return', optional($.expression), ';'),
 
     // Loop
     loop_statement: $ => prec(PREC.DECLARATION, seq(

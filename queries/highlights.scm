@@ -1,17 +1,17 @@
 ; Highlight queries for Atom programming language
 
+; Highlight groups are helix editor style 
+
 ; Comments
 (comment) @comment
 
 ; Types
 (primitive_type) @type.builtin
 
-; Keywords
-[
-  "match"
-  "loop"
-  "return"
-] @keyword
+; Keywords -- don't add those, they are supposed to be treated like function calls ultimately
+; "match" @keyword.control.conditional
+; "loop" @keyword.control.repeat
+; "return" @keyword.control.return
 
 ; Struct and enum definitions - capture first identifier only
 (struct_definition
@@ -38,15 +38,21 @@
 
 ; Struct fields
 (struct_field
-  (identifier) @property)
+  (identifier) @variable.other.member)
 
 ; Struct field initialization
 (struct_field_init
-  (identifier) @property)
+  (identifier) @variable.other.member)
 
 ; Enum cases
 (enum_case
   (identifier) @constructor)
+
+; Match patterns - enum constructors (first identifier in pattern)
+(match_arm
+  (pattern
+    .
+    (identifier) @constructor))
 
 ; Operators
 [
@@ -84,11 +90,11 @@
 ] @operator
 
 ; Literals
-(number_literal) @number
+(number_literal) @constant.numeric
 
 (string_literal) @string
 
-(rune_literal) @character
+(rune_literal) @constant.character
 
 ; Loop variables
 (loop_variable) @variable.builtin
@@ -125,19 +131,42 @@
 (test_block
   (string_literal)? @string.special)
 
-; Import statements
-(import_statement
-  (identifier) @namespace)
+; UFCS with namespace (e.g., x.cmath::cos()) - MUST come first for specificity
+; When namespace_access is first child of call_expression:
+; - The field_access identifier (after .) should be @namespace
+; - The namespace_access identifier (after ::) should be @function.call  
+(call_expression
+  .
+  (expression
+    (namespace_access
+      (expression
+        (field_access
+          (identifier) @namespace))
+      (identifier) @function.call)))
 
-; Field access
+; Regular namespace function calls (e.g., math::sin())
+; When namespace_access is first child of call_expression:
+; - The first identifier (before ::) should be @namespace
+; - The second identifier (after ::) should be @function.call
+(call_expression
+  .
+  (expression
+    (namespace_access
+      (expression
+        (identifier) @namespace)
+      (identifier) @function.call)))
+
+; Field access - but not when part of UFCS namespace pattern above
 (field_access
   "." @punctuation.delimiter
-  (identifier) @property)
+  (identifier) @variable.other.member)
 
-; Namespace access
+; Regular namespace access - for non-function contexts
+; Only highlight the left side (before ::) as namespace
 (namespace_access
-  "::" @punctuation.delimiter
-  (identifier) @namespace)
+  (expression
+    (identifier) @namespace)
+  "::")
 
 ; Struct expressions - highlight type name
 (struct_expression
@@ -157,20 +186,26 @@
   (expression
     (identifier) @function.call))
 
+; Type parameters - only lowercase identifiers (like Gleam)
+(type_parameter
+  (type
+    (struct_type
+      (identifier) @type.parameter
+      (#match? @type.parameter "^[a-z]"))))
+
 ; Type annotations - use struct_type and enum_type
+; Uppercase identifiers in types are actual types
 (struct_type
-  (identifier) @type)
+  (identifier) @type
+  (#match? @type "^[A-Z]"))
 
 (enum_type
-  (identifier) @type)
+  (identifier) @type
+  (#match? @type "^[A-Z]"))
 
 ; Generic types
 (generic_type
   (identifier) @type)
-
-; Type parameters
-(type_parameter
-  (identifier) @type.parameter)
 
 ; Tuple types
 (tuple_type) @type

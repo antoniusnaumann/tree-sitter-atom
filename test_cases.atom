@@ -1,0 +1,19 @@
+// Type parameters - lowercase should be @type.parameter
++Option(t;
+    Some(t)
+    None
+)
+
++Result(t, e;
+    Ok(t)
+    Err(e)
+)
+
+// UFCS with namespace
+main() {
+    x := 1.0
+    y := x.cmath::cos()       // cmath should be @namespace, cos should be @function.call
+    z := math::sin(x)         // math should be @namespace, sin should be @function.call
+    s := "test"
+    len := s.len()            // len should be @function.method (regular method call)
+}
