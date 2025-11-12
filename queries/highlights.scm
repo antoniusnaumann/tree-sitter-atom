@@ -6,16 +6,23 @@
 ; Types
 (primitive_type) @type.builtin
 
-; Struct and enum definitions
+; Keywords
+[
+  "match"
+  "loop"
+  "return"
+] @keyword
+
+; Struct and enum definitions - capture first identifier only
 (struct_definition
-  (identifier) @type)
+  (identifier) @type.definition)
 
 (enum_definition
-  (identifier) @type)
+  (identifier) @type.definition)
 
-; Function definitions
+; Function definitions - capture first identifier only
 (function_definition
-  (identifier) @function)
+  (identifier) @function.definition)
 
 ; Variable declarations
 (variable_declaration
@@ -132,18 +139,30 @@
   "::" @punctuation.delimiter
   (identifier) @namespace)
 
+; Struct expressions - highlight type name
+(struct_expression
+  .
+  (expression
+    (identifier) @type))
+
 ; Method calls
 (method_call
   "." @punctuation.delimiter
   (identifier) @function.method)
 
-; Call expressions - highlight function name
+; Call expressions - match function identifiers only (first expression)
+; Use . to anchor the pattern to the first child
 (call_expression
+  .
   (expression
     (identifier) @function.call))
 
-; Type annotations
-(type) @type
+; Type annotations - use struct_type and enum_type
+(struct_type
+  (identifier) @type)
+
+(enum_type
+  (identifier) @type)
 
 ; Generic types
 (generic_type
@@ -162,18 +181,13 @@
 ; Variadic types
 (variadic_type) @type
 
-; Match patterns
-(pattern
-  (identifier) @variable.parameter)
+; Match patterns - don't capture identifiers in patterns as they're bindings
+; Only the pattern node itself should be highlighted
 
 ; Wildcard pattern
-(pattern
-  "_" @constant.builtin)
+"_" @constant.builtin
 
 ; String interpolation
 (interpolated_string
   "\\(" @punctuation.special
   ")" @punctuation.special)
-
-; Special identifiers (fallback - should be last)
-(identifier) @variable
