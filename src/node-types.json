@@ -242,7 +242,11 @@
           "named": true
         },
         {
-          "type": "interpolation",
+          "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "loop_variable",
           "named": true
         },
         {
@@ -267,6 +271,10 @@
         },
         {
           "type": "string_literal",
+          "named": true
+        },
+        {
+          "type": "struct_expression",
           "named": true
         },
         {
@@ -399,7 +407,7 @@
     }
   },
   {
-    "type": "interpolation",
+    "type": "interpolated_string",
     "named": true,
     "fields": {},
     "children": {
@@ -723,11 +731,30 @@
           "named": true
         },
         {
-          "type": "struct_field",
+          "type": "struct_field_list",
           "named": true
         },
         {
           "type": "visibility",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "struct_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "struct_field_init",
           "named": true
         }
       ]
@@ -742,11 +769,53 @@
       "required": true,
       "types": [
         {
+          "type": "expression",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
         {
           "type": "type",
+          "named": true
+        },
+        {
+          "type": "variadic_parameter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "struct_field_init",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "struct_field_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "struct_field",
           "named": true
         }
       ]
@@ -1166,6 +1235,10 @@
   {
     "type": "loop",
     "named": false
+  },
+  {
+    "type": "loop_variable",
+    "named": true
   },
   {
     "type": "match",

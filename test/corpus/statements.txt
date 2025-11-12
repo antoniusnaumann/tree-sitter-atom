@@ -40,17 +40,18 @@ Struct definition
 ---
 
 (source_file
-  (ERROR
+  (struct_definition
     (visibility)
     (identifier)
-    (parameter
-      (identifier)
-      (type
-        (primitive_type)))
-    (parameter
-      (identifier)
-      (type
-        (primitive_type)))))
+    (struct_field_list
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type)))
+      (struct_field
+        (identifier)
+        (type
+          (primitive_type))))))
 
 ==================
 Enum definition
@@ -64,7 +65,7 @@ Enum definition
 ---
 
 (source_file
-  (ERROR
+  (enum_definition
     (visibility)
     (identifier)
     (type_parameter
@@ -75,21 +76,16 @@ Enum definition
       (identifier)
       (type
         (primitive_type)))
-    (parameter
+    (enum_case
       (identifier)
-      (ERROR
-        (type
-          (tuple_type
-            (type
-              (struct_type
-                (identifier))))))
       (type
-        (generic_type
-          (identifier)
-          (type_parameter
-            (type
-              (struct_type
-                (identifier)))))))))
+        (struct_type
+          (identifier))))
+    (enum_case
+      (identifier)
+      (type
+        (struct_type
+          (identifier))))))
 
 ==================
 Variable declaration
@@ -103,37 +99,35 @@ main() {
 ---
 
 (source_file
-  (enum_definition
-    (identifier))
-  (test_block
+  (function_definition
+    (identifier)
     (block
       (statement
         (variable_declaration
           (identifier)
           (expression
-            (identifier))))
-      (statement
-        (expression_statement
-          (expression
-            (tuple_expression
-              (identifier)
+            (struct_expression
               (expression
-                (number_literal))
-              (identifier)
-              (expression
-                (number_literal))))
-          (MISSING ";")))
+                (identifier))
+              (struct_field_init
+                (identifier)
+                (expression
+                  (number_literal)))
+              (struct_field_init
+                (identifier)
+                (expression
+                  (number_literal)))))))
       (statement
         (variable_declaration
           (identifier)
           (expression
-            (identifier))))
-      (expression
-        (tuple_expression
-          (expression
-            (number_literal))
-          (expression
-            (number_literal)))))))
+            (call_expression
+              (expression
+                (identifier))
+              (expression
+                (number_literal))
+              (expression
+                (number_literal)))))))))
 
 ==================
 Match statement
@@ -243,10 +237,8 @@ sum(values Int*) Int {
               (assignment_expression
                 (expression
                   (identifier))
-                (ERROR
-                  (UNEXPECTED '$'))
                 (expression
-                  (number_literal)))))))
+                  (loop_variable)))))))
       (expression
         (identifier)))))
 
@@ -294,10 +286,9 @@ Comments
 (source_file
   (comment)
   (comment)
-  (enum_definition
+  (function_definition
     (visibility)
-    (identifier))
-  (test_block
+    (identifier)
     (block)))
 
 ==================
@@ -322,7 +313,11 @@ greet(name String) String {
         (primitive_type)))
     (block
       (expression
-        (string_literal)))))
+        (interpolated_string
+          (string_literal)
+          (expression
+            (identifier))
+          (string_literal))))))
 
 ==================
 Generic function
