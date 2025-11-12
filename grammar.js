@@ -13,10 +13,12 @@ const PREC = {
   UNARY: 11,
   FIELD: 12,
   CALL: 13,
-  ASSIGN: 14,
   STRUCT: 15,
   ENUM: 16,
-  FIELD_DEF: 17
+  ASSIGN: 14,
+  FIELD_DEF: 17,
+  TYPE: 18,
+  DECLARATION: 19
 };
 
 module.exports = grammar({
@@ -24,18 +26,15 @@ module.exports = grammar({
 
   word: $ => $.identifier,
 
+  externals: $ => [],
+
   conflicts: $ => [
     [$.struct_field, $.parameter, $.variadic_parameter],
     [$.enum_case, $.parameter],
     [$.struct_definition, $.enum_definition],
-    [$.struct_definition, $.enum_definition, $.function_definition],
     [$.variable_declaration, $.constant_declaration],
     [$.struct_type, $.enum_type],
-    [$.parameter, $.variadic_parameter, $.expression, $.struct_expression, $.enum_expression],
-    [$.parenthesized_expression, $.tuple_expression, $.struct_field_init],
-    [$.loop_statement, $.expression],
-    [$.type, $.variadic_parameter],
-    [$.tuple_type, $.enum_case],
+    [$.parenthesized_expression, $.tuple_expression],
     [$.call_expression, $.index_access]
   ],
 
@@ -243,27 +242,27 @@ module.exports = grammar({
       '_'
     ),
 
-    // Expressions
+    // Expressions (ordered by precedence, highest first)
     expression: $ => choice(
+      $.comptime_expression,
+      $.assignment_expression,
       $.binary_expression,
       $.unary_expression,
       $.call_expression,
       $.method_call,
       $.field_access,
       $.index_access,
-      $.assignment_expression,
-      $.comptime_expression,
       $.interpolation,
-      $.parenthesized_expression,
-      $.identifier,
-      $.number_literal,
-      $.string_literal,
-      $.rune_literal,
       $.tuple_expression,
       $.struct_expression,
       $.enum_expression,
       $.closure,
-      $.block
+      $.block,
+      $.parenthesized_expression,
+      $.identifier,
+      $.number_literal,
+      $.string_literal,
+      $.rune_literal
     ),
 
     binary_expression: $ => choice(

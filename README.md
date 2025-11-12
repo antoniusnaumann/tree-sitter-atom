@@ -25,6 +25,14 @@ The grammar can be used with any editor that supports Tree-sitter.
 
 - [Tree-sitter CLI](https://tree-sitter.github.io/tree-sitter/creating-parsers#installation)
 
+### Building
+
+The grammar has some inherent parsing conflicts due to the flexible nature of the Atom language syntax. These conflicts are handled by Tree-sitter at runtime and don't prevent the grammar from working correctly.
+
+```bash
+tree-sitter generate  # Note: may show conflicts but still generates a working parser
+```
+
 ### Testing
 
 ```bash
@@ -34,7 +42,6 @@ npm test
 Or manually:
 
 ```bash
-tree-sitter generate
 tree-sitter test
 ```
 

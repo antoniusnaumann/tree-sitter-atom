@@ -1073,6 +1073,14 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "comptime_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "assignment_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "binary_expression"
         },
         {
@@ -1097,35 +1105,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "assignment_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comptime_expression"
-        },
-        {
-          "type": "SYMBOL",
           "name": "interpolation"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "parenthesized_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "number_literal"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string_literal"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "rune_literal"
         },
         {
           "type": "SYMBOL",
@@ -1146,6 +1126,26 @@
         {
           "type": "SYMBOL",
           "name": "block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "parenthesized_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rune_literal"
         }
       ]
     },
@@ -2435,11 +2435,6 @@
       "enum_definition"
     ],
     [
-      "struct_definition",
-      "enum_definition",
-      "function_definition"
-    ],
-    [
       "variable_declaration",
       "constant_declaration"
     ],
@@ -2448,28 +2443,8 @@
       "enum_type"
     ],
     [
-      "parameter",
-      "variadic_parameter",
-      "expression",
-      "struct_expression",
-      "enum_expression"
-    ],
-    [
       "parenthesized_expression",
-      "tuple_expression",
-      "struct_field_init"
-    ],
-    [
-      "loop_statement",
-      "expression"
-    ],
-    [
-      "type",
-      "variadic_parameter"
-    ],
-    [
-      "tuple_type",
-      "enum_case"
+      "tuple_expression"
     ],
     [
       "call_expression",
