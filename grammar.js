@@ -34,7 +34,9 @@ module.exports = grammar({
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.function_definition],
     [$._field_or_param, $.enum_case],
-    [$.struct_field_list, $.enum_definition]
+    [$.struct_field_list, $.enum_definition],
+    [$.struct_field_list, $.enum_definition, $.function_definition],
+    [$.enum_definition, $.function_definition]
   ],
 
   rules: {
@@ -161,7 +163,7 @@ module.exports = grammar({
     ),
 
     // Function definition
-    function_definition: $ => prec(1, seq(
+    function_definition: $ => prec.dynamic(3, seq(
       optional($.visibility),
       $.identifier,
       '(',

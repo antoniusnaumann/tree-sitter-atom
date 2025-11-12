@@ -46,13 +46,13 @@
 
 ; Enum cases
 (enum_case
-  (identifier) @constructor)
+  (identifier) @type.enum.variant)
 
 ; Match patterns - enum constructors (first identifier in pattern)
 (match_arm
   (pattern
     .
-    (identifier) @constructor))
+    (identifier) @type.enum.variant))
 
 ; Operators
 [
@@ -131,32 +131,7 @@
 (test_block
   (string_literal)? @string.special)
 
-; UFCS with namespace (e.g., x.cmath::cos()) - MUST come first for specificity
-; When namespace_access is first child of call_expression:
-; - The field_access identifier (after .) should be @namespace
-; - The namespace_access identifier (after ::) should be @function.call  
-(call_expression
-  .
-  (expression
-    (namespace_access
-      (expression
-        (field_access
-          (identifier) @namespace))
-      (identifier) @function.call)))
-
-; Regular namespace function calls (e.g., math::sin())
-; When namespace_access is first child of call_expression:
-; - The first identifier (before ::) should be @namespace
-; - The second identifier (after ::) should be @function.call
-(call_expression
-  .
-  (expression
-    (namespace_access
-      (expression
-        (identifier) @namespace)
-      (identifier) @function.call)))
-
-; Field access - but not when part of UFCS namespace pattern above
+; Field access - general pattern (will be overridden by more specific patterns below)
 (field_access
   "." @punctuation.delimiter
   (identifier) @variable.other.member)
@@ -186,12 +161,31 @@
   (expression
     (identifier) @function.call))
 
-; Type parameters - only lowercase identifiers (like Gleam)
-(type_parameter
-  (type
-    (struct_type
-      (identifier) @type.parameter
-      (#match? @type.parameter "^[a-z]"))))
+; Regular namespace function calls (e.g., math::sin())
+; When namespace_access is first child of call_expression:
+; - The first identifier (before ::) should be @namespace
+; - The second identifier (after ::) should be @function.call
+(call_expression
+  .
+  (expression
+    (namespace_access
+      (expression
+        (identifier) @namespace)
+      (identifier) @function.call)))
+
+; UFCS with namespace (e.g., x.cmath::cos()) - MORE SPECIFIC, comes after general patterns
+; When namespace_access is first child of call_expression:
+; - The field_access identifier (after .) should be @namespace
+; - The namespace_access identifier (after ::) should be @function.call  
+(call_expression
+  .
+  (expression
+    (namespace_access
+      (expression
+        (field_access
+          (expression)
+          (identifier) @namespace))
+      (identifier) @function.call)))
 
 ; Type annotations - use struct_type and enum_type
 ; Uppercase identifiers in types are actual types
@@ -202,6 +196,16 @@
 (enum_type
   (identifier) @type
   (#match? @type "^[A-Z]"))
+
+; Type parameters - lowercase identifiers in type positions (like Gleam)
+; This must come AFTER the uppercase type rules to override for lowercase
+(struct_type
+  (identifier) @type.parameter
+  (#match? @type.parameter "^[a-z]"))
+
+(enum_type
+  (identifier) @type.parameter
+  (#match? @type.parameter "^[a-z]"))
 
 ; Generic types
 (generic_type

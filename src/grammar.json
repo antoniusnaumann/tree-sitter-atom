@@ -39,10 +39,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "import_statement"
-        },
-        {
-          "type": "SYMBOL",
           "name": "comment"
         }
       ]
@@ -701,8 +697,8 @@
       ]
     },
     "function_definition": {
-      "type": "PREC",
-      "value": 1,
+      "type": "PREC_DYNAMIC",
+      "value": 3,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1015,10 +1011,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "return_statement"
-        },
-        {
-          "type": "SYMBOL",
           "name": "loop_statement"
         },
         {
@@ -1033,31 +1025,6 @@
         {
           "type": "SYMBOL",
           "name": "expression"
-        },
-        {
-          "type": "STRING",
-          "value": ";"
-        }
-      ]
-    },
-    "return_statement": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "return"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "expression"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
         },
         {
           "type": "STRING",
@@ -2788,6 +2755,15 @@
     [
       "struct_field_list",
       "enum_definition"
+    ],
+    [
+      "struct_field_list",
+      "enum_definition",
+      "function_definition"
+    ],
+    [
+      "enum_definition",
+      "function_definition"
     ]
   ],
   "precedences": [],
