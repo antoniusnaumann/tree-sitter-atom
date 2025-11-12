@@ -1,0 +1,385 @@
+==================
+Function definitions
+==================
+
++add(a Int, b Int) Int {
+    a + b
+}
+
+---
+
+(source_file
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (return_type
+      (type
+        (primitive_type)))
+    (block
+      (expression
+        (binary_expression
+           (expression
+            (identifier))
+           (expression
+            (identifier)))))))
+
+==================
+Struct definition
+==================
+
++Point(x Float, y Float)
+
+---
+
+(source_file
+  (ERROR
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))))
+
+==================
+Enum definition
+==================
+
++Result(t, e = String;
+    Ok(t)
+    Err(e)
+)
+
+---
+
+(source_file
+  (ERROR
+    (visibility)
+    (identifier)
+    (type_parameter
+      (type
+        (struct_type
+          (identifier))))
+    (type_parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (parameter
+      (identifier)
+      (ERROR
+        (type
+          (tuple_type
+            (type
+              (struct_type
+                (identifier))))))
+      (type
+        (generic_type
+          (identifier)
+          (type_parameter
+            (type
+              (struct_type
+                (identifier)))))))))
+
+==================
+Variable declaration
+==================
+
+main() {
+    p := Point(x: 1.0, y: 2.0)
+    result := add(1, 2)
+}
+
+---
+
+(source_file
+  (enum_definition
+    (identifier))
+  (test_block
+    (block
+      (statement
+        (variable_declaration
+          (identifier)
+          (expression
+            (identifier))))
+      (statement
+        (expression_statement
+          (expression
+            (tuple_expression
+              (identifier)
+              (expression
+                (number_literal))
+              (identifier)
+              (expression
+                (number_literal))))
+          (MISSING ";")))
+      (statement
+        (variable_declaration
+          (identifier)
+          (expression
+            (identifier))))
+      (expression
+        (tuple_expression
+          (expression
+            (number_literal))
+          (expression
+            (number_literal)))))))
+
+==================
+Match statement
+==================
+
+fib(n Int) Int {
+    match(n) {
+        0 { 0 }
+        1 { 1 }
+        _ { fib(n - 1) + fib(n - 2) }
+    }
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (return_type
+      (type
+        (primitive_type)))
+    (block
+      (statement
+        (match_statement
+          (expression
+            (identifier))
+          (match_arm
+            (pattern
+              (number_literal))
+            (block
+              (expression
+                (number_literal))))
+          (match_arm
+            (pattern
+              (number_literal))
+            (block
+              (expression
+                (number_literal))))
+          (match_arm
+            (pattern)
+            (block
+              (expression
+                (binary_expression
+                   (expression
+                    (call_expression
+                      (expression
+                        (identifier))
+                      (expression
+                        (binary_expression
+                           (expression
+                            (identifier))
+                           (expression
+                            (number_literal))))))
+                   (expression
+                    (call_expression
+                      (expression
+                        (identifier))
+                      (expression
+                        (binary_expression
+                           (expression
+                            (identifier))
+                           (expression
+                            (number_literal)))))))))))))))
+
+==================
+Loop statement
+==================
+
+sum(values Int*) Int {
+    total := 0
+    loop(values) {
+        total += $0
+    }
+    total
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter
+      (variadic_parameter
+        (identifier)
+        (variadic_type
+          (type
+            (primitive_type)))))
+    (return_type
+      (type
+        (primitive_type)))
+    (block
+      (statement
+        (variable_declaration
+          (identifier)
+          (expression
+            (number_literal))))
+      (statement
+        (loop_statement
+          (expression
+            (identifier))
+          (block
+            (expression
+              (assignment_expression
+                (expression
+                  (identifier))
+                (ERROR
+                  (UNEXPECTED '$'))
+                (expression
+                  (number_literal)))))))
+      (expression
+        (identifier)))))
+
+==================
+Test block
+==================
+
+"Basic arithmetic" {
+    assert(add(2, 3) == 5)
+}
+
+---
+
+(source_file
+  (test_block
+    (string_literal)
+    (block
+      (expression
+        (call_expression
+          (expression
+            (identifier))
+          (expression
+            (binary_expression
+               (expression
+                (call_expression
+                  (expression
+                    (identifier))
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))
+               (expression
+                (number_literal)))))))))
+
+==================
+Comments
+==================
+
+/// This is a doc comment
+// This is a regular comment
++func() {}
+
+---
+
+(source_file
+  (comment)
+  (comment)
+  (enum_definition
+    (visibility)
+    (identifier))
+  (test_block
+    (block)))
+
+==================
+String interpolation
+==================
+
+greet(name String) String {
+    "Hello, \(name)!"
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (primitive_type)))
+    (return_type
+      (type
+        (primitive_type)))
+    (block
+      (expression
+        (string_literal)))))
+
+==================
+Generic function
+==================
+
++unwrap(op Option(t), msg String = "default") t {
+    match(op) {
+        Some(inner) { inner }
+        None { error(msg) }
+    }
+}
+
+---
+
+(source_file
+  (function_definition
+    (visibility)
+    (identifier)
+    (parameter
+      (identifier)
+      (type
+        (generic_type
+          (identifier)
+          (type_parameter
+            (type
+              (struct_type
+                (identifier)))))))
+    (parameter
+      (identifier)
+      (type
+        (primitive_type))
+      (expression
+        (string_literal)))
+    (return_type
+      (type
+        (struct_type
+          (identifier))))
+    (block
+      (statement
+        (match_statement
+          (expression
+            (identifier))
+          (match_arm
+            (pattern
+              (identifier)
+              (pattern
+                (identifier)))
+            (block
+              (expression
+                (identifier))))
+          (match_arm
+            (pattern
+              (identifier))
+            (block
+              (expression
+                (call_expression
+                  (expression
+                    (identifier))
+                  (expression
+                    (identifier)))))))))))
