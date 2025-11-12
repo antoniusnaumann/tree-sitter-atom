@@ -3,13 +3,6 @@
 ; Comments
 (comment) @comment
 
-; Keywords
-[
-  "match"
-  "loop"
-  "return"
-] @keyword.control
-
 ; Types
 (primitive_type) @type.builtin
 
