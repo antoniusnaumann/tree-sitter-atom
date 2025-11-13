@@ -734,6 +734,10 @@
       "required": true,
       "types": [
         {
+          "type": "assignment_expression",
+          "named": true
+        },
+        {
           "type": "expression_statement",
           "named": true
         },

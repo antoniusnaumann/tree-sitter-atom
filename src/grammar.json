@@ -1175,6 +1175,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "assignment_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "expression_statement"
         },
         {
@@ -1577,7 +1581,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 6,
+          "value": 4,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1606,7 +1610,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 6,
+          "value": 4,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1635,7 +1639,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 7,
+          "value": 5,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1664,7 +1668,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 7,
+          "value": 5,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1693,7 +1697,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 7,
+          "value": 5,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1722,7 +1726,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 7,
+          "value": 5,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1751,7 +1755,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 4,
+          "value": 6,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1780,7 +1784,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 5,
+          "value": 7,
           "content": {
             "type": "SEQ",
             "members": [
@@ -3033,6 +3037,10 @@
     ],
     [
       "struct_field_init",
+      "expression"
+    ],
+    [
+      "statement",
       "expression"
     ]
   ],

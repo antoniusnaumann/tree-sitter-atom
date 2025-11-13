@@ -1,21 +1,21 @@
-// Precedences
+// Precedences (higher number = higher precedence = binds tighter)
 const PREC = {
   CONCAT: 1,
   LOGICAL_OR: 2,
   LOGICAL_AND: 3,
-  BITWISE_OR: 4,
-  BITWISE_AND: 5,
-  EQUAL: 6,
-  COMPARE: 7,
-  SHIFT: 8,
-  ADD: 9,
-  MULTIPLY: 10,
-  UNARY: 11,
+  EQUAL: 4,        // == !=
+  COMPARE: 5,      // < > <= >=
+  BITWISE_OR: 6,   // |
+  BITWISE_AND: 7,  // &
+  SHIFT: 8,        // << >>
+  ADD: 9,          // + -
+  MULTIPLY: 10,    // * /
+  UNARY: 11,       // ! -
   FIELD: 12,
   CALL: 13,
+  ASSIGN: 14,
   STRUCT: 15,
   ENUM: 16,
-  ASSIGN: 14,
   FIELD_DEF: 17,
   TYPE: 18,
   DECLARATION: 19
@@ -47,7 +47,8 @@ module.exports = grammar({
     [$.tuple_expression],
     [$.variadic_type],
     [$.block],
-    [$.struct_field_init, $.expression]
+    [$.struct_field_init, $.expression],
+    [$.statement, $.expression]  // assignment_expression can be both
   ],
 
   rules: {
@@ -245,6 +246,7 @@ module.exports = grammar({
     // Statements
     statement: $ => choice(
       $.variable_declaration,
+      $.assignment_expression,  // Assignments can be statements
       $.expression_statement,
       $.loop_statement,
       $.match_statement
