@@ -11,13 +11,13 @@ Function definitions
 (source_file
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (return_type
@@ -27,9 +27,9 @@ Function definitions
       (expression
         (binary_expression
            (expression
-            (identifier))
+            (value_identifier))
            (expression
-            (identifier)))))))
+            (value_identifier)))))))
 
 ==================
 Struct definition
@@ -42,14 +42,14 @@ Struct definition
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type)))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type))))))
 
@@ -67,25 +67,25 @@ Enum definition
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (type_parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))))
+        (type_parameter_ref
+          (value_identifier))))))
 
 ==================
 Variable declaration
@@ -100,30 +100,31 @@ main() {
 
 (source_file
   (function_definition
-    (identifier)
+    (value_identifier)
     (block
       (statement
         (variable_declaration
-          (identifier)
+          (value_identifier)
           (expression
             (struct_expression
               (expression
-                (identifier))
+                (enum_expression
+                  (type_identifier)))
               (struct_field_init
-                (identifier)
+                (value_identifier)
                 (expression
                   (number_literal)))
               (struct_field_init
-                (identifier)
+                (value_identifier)
                 (expression
                   (number_literal)))))))
       (statement
         (variable_declaration
-          (identifier)
+          (value_identifier)
           (expression
             (call_expression
               (expression
-                (identifier))
+                (value_identifier))
               (expression
                 (number_literal))
               (expression
@@ -145,9 +146,9 @@ fib(n Int) Int {
 
 (source_file
   (function_definition
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (return_type
@@ -157,7 +158,7 @@ fib(n Int) Int {
       (statement
         (match_statement
           (expression
-            (identifier))
+            (value_identifier))
           (match_arm
             (pattern
               (number_literal))
@@ -178,21 +179,21 @@ fib(n Int) Int {
                    (expression
                     (call_expression
                       (expression
-                        (identifier))
+                        (value_identifier))
                       (expression
                         (binary_expression
                            (expression
-                            (identifier))
+                            (value_identifier))
                            (expression
                             (number_literal))))))
                    (expression
                     (call_expression
                       (expression
-                        (identifier))
+                        (value_identifier))
                       (expression
                         (binary_expression
                            (expression
-                            (identifier))
+                            (value_identifier))
                            (expression
                             (number_literal)))))))))))))))
 
@@ -212,9 +213,9 @@ sum(values Int*) Int {
 
 (source_file
   (function_definition
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (variadic_type
           (type
@@ -225,22 +226,22 @@ sum(values Int*) Int {
     (block
       (statement
         (variable_declaration
-          (identifier)
+          (value_identifier)
           (expression
             (number_literal))))
       (statement
         (loop_statement
           (expression
-            (identifier))
+            (value_identifier))
           (block
             (expression
               (assignment_expression
                 (expression
-                  (identifier))
+                  (value_identifier))
                 (expression
                   (loop_variable)))))))
       (expression
-        (identifier)))))
+        (value_identifier)))))
 
 ==================
 Test block
@@ -259,13 +260,13 @@ Test block
       (expression
         (call_expression
           (expression
-            (identifier))
+            (value_identifier))
           (expression
             (binary_expression
                (expression
                 (call_expression
                   (expression
-                    (identifier))
+                    (value_identifier))
                   (expression
                     (number_literal))
                   (expression
@@ -288,7 +289,7 @@ Comments
   (comment)
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (block)))
 
 ==================
@@ -303,9 +304,9 @@ greet(name String) String {
 
 (source_file
   (function_definition
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (return_type
@@ -316,7 +317,7 @@ greet(name String) String {
         (interpolated_string
           (string_literal)
           (expression
-            (identifier))
+            (value_identifier))
           (string_literal))))))
 
 ==================
@@ -335,49 +336,49 @@ Generic function
 (source_file
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (generic_type
-          (identifier)
+          (type_identifier)
           (type_parameter
             (type
-              (struct_type
-                (identifier)))))))
+              (type_parameter_ref
+                (value_identifier)))))))
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type))
       (expression
         (string_literal)))
     (return_type
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (block
       (statement
         (match_statement
           (expression
-            (identifier))
+            (value_identifier))
           (match_arm
             (pattern
-              (identifier)
+              (type_identifier)
               (pattern
-                (identifier)))
+                (value_identifier)))
             (block
               (expression
-                (identifier))))
+                (value_identifier))))
           (match_arm
             (pattern
-              (identifier))
+              (type_identifier))
             (block
               (expression
                 (call_expression
                   (expression
-                    (identifier))
+                    (value_identifier))
                   (expression
-                    (identifier)))))))))))
+                    (value_identifier)))))))))))
 
 
 ==================
@@ -393,33 +394,33 @@ UFCS match statement
 (source_file
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (struct_type
-          (identifier))))
+          (type_identifier))))
     (block
       (expression
         (call_expression
           (expression
             (namespace_access
               (expression
-                (identifier))
-              (identifier)))
+                (value_identifier))
+              (value_identifier)))
           (expression
             (member_match_expression
               (expression
-                (identifier))
+                (value_identifier))
               (match_arm
                 (pattern
-                  (identifier))
+                  (type_identifier))
                 (block
                   (expression
                     (number_literal))))
               (match_arm
                 (pattern
-                  (identifier))
+                  (type_identifier))
                 (block
                   (expression
                     (number_literal)))))))))))
@@ -440,28 +441,28 @@ Error function call
 (source_file
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (block
       (statement
         (match_statement
           (expression
-            (identifier))
+            (value_identifier))
           (match_arm
             (pattern
-              (identifier))
+              (type_identifier))
             (block))
           (match_arm
             (pattern
-              (identifier))
+              (type_identifier))
             (block
               (expression
                 (call_expression
                   (expression
-                    (identifier))
+                    (value_identifier))
                   (expression
                     (string_literal)))))))))))
 
@@ -481,9 +482,9 @@ Using enum cases as arguments
   (comment)
   (function_definition
     (visibility)
-    (identifier)
+    (value_identifier)
     (parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (block
@@ -492,14 +493,16 @@ Using enum cases as arguments
           (expression
             (call_expression
               (expression
-                (identifier))
+                (value_identifier))
               (expression
-                (identifier))
+                (value_identifier))
               (expression
-                (identifier))))))
+                (enum_expression
+                  (type_identifier)))))))
       (expression
         (call_expression
           (expression
-            (identifier))
+            (value_identifier))
           (expression
-            (identifier)))))))
+            (enum_expression
+              (type_identifier))))))))

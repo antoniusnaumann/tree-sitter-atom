@@ -1,7 +1,7 @@
 {
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "atom",
-  "word": "identifier",
+  "word": "value_identifier",
   "rules": {
     "source_file": {
       "type": "REPEAT",
@@ -73,10 +73,6 @@
           ]
         }
       ]
-    },
-    "identifier": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z_][a-zA-Z0-9_]*"
     },
     "type_identifier": {
       "type": "PATTERN",
@@ -1176,6 +1172,10 @@
         {
           "type": "SYMBOL",
           "name": "value_identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_identifier"
         },
         {
           "type": "SYMBOL",

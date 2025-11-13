@@ -12,25 +12,25 @@ Enum with type parameters and default
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (type_parameter
-      (identifier)
+      (value_identifier)
       (type
         (primitive_type)))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))))
+        (type_parameter_ref
+          (value_identifier))))))
 
 ==================
 Generic enum with single type parameter
@@ -46,18 +46,18 @@ Generic enum with single type parameter
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Generic enum with single type parameter
@@ -73,18 +73,18 @@ Generic enum with single type parameter
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Generic enum with single type parameter (whitespace)
@@ -100,18 +100,18 @@ Generic enum with single type parameter (whitespace)
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Generic enum with implicit type parameter
@@ -127,14 +127,14 @@ Generic enum with implicit type parameter
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Enum with associated values
@@ -150,13 +150,13 @@ Enum with associated values
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
         (primitive_type)))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Simple enum without type parameters
@@ -176,19 +176,19 @@ Simple enum without type parameters
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (enum_case
-      (identifier))
+      (type_identifier))
     (enum_case
-      (identifier))
+      (type_identifier))
     (enum_case
-      (identifier))
+      (type_identifier))
     (enum_case
-      (identifier))
+      (type_identifier))
     (enum_case
-      (identifier))
+      (type_identifier))
     (enum_case
-      (identifier))))
+      (type_identifier))))
 
 ==================
 Struct with primitive types
@@ -201,14 +201,14 @@ Struct with primitive types
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type)))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type))))))
 
@@ -228,22 +228,22 @@ Struct with mixed field types
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type)))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type)))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type)))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type))))))
 
@@ -258,13 +258,13 @@ Struct with generic type field
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (generic_type
-            (identifier)
+            (type_identifier)
             (type_parameter
               (type
                 (primitive_type)))))))))
@@ -280,10 +280,10 @@ Struct with tuple type field
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (tuple_type
             (type
@@ -302,15 +302,15 @@ Struct with sized integer type
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (sized_type
             (number_literal))))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (sized_type
             (number_literal)))))))
@@ -326,10 +326,10 @@ Struct with variadic type
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (variadic_type
             (type
@@ -346,18 +346,18 @@ Struct with custom struct type field
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (struct_type
-            (identifier))))
+            (type_identifier))))
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (struct_type
-            (identifier)))))))
+            (type_identifier)))))))
 
 ==================
 Nested generic types
@@ -370,17 +370,17 @@ Nested generic types
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (generic_type
-            (identifier)
+            (type_identifier)
             (type_parameter
               (type
                 (generic_type
-                  (identifier)
+                  (type_identifier)
                   (type_parameter
                     (type
                       (primitive_type)))
@@ -399,10 +399,10 @@ Private struct definition
 (source_file
   (struct_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type))))))
 
@@ -416,10 +416,10 @@ Config(value String)
 
 (source_file
   (struct_definition
-    (identifier)
+    (type_identifier)
     (struct_field_list
       (struct_field
-        (identifier)
+        (value_identifier)
         (type
           (primitive_type))))))
 
@@ -438,30 +438,30 @@ Enum case with multiple type parameters
 (source_file
   (enum_definition
     (visibility)
-    (identifier)
+    (type_identifier)
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (type_parameter
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier))))
+        (type_parameter_ref
+          (value_identifier))))
     (enum_case
-      (identifier)
+      (type_identifier)
       (type
-        (struct_type
-          (identifier)))
+        (type_parameter_ref
+          (value_identifier)))
       (type
-        (struct_type
-          (identifier))))))
+        (type_parameter_ref
+          (value_identifier))))))

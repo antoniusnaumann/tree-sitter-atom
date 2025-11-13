@@ -24,7 +24,7 @@ const PREC = {
 module.exports = grammar({
   name: 'atom',
 
-  word: $ => $.identifier,
+  word: $ => $.value_identifier,
 
   externals: $ => [],
 
@@ -56,7 +56,8 @@ module.exports = grammar({
     ),
 
     // Identifiers
-    identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    // DEPRECATED: Use type_identifier or value_identifier instead
+    // identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
     
     // Casing-specific identifiers
     // Type names and enum variants must start with uppercase
@@ -256,6 +257,7 @@ module.exports = grammar({
 
     pattern: $ => choice(
       $.value_identifier,
+      $.type_identifier,
       $.number_literal,
       $.string_literal,
       seq($.type_identifier, '(', optional(commaSep($.pattern)), ')'),
