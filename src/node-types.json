@@ -569,6 +569,11 @@
     }
   },
   {
+    "type": "number_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "parameter",
     "named": true,
     "fields": {},
@@ -1260,10 +1265,6 @@
   {
     "type": "match",
     "named": false
-  },
-  {
-    "type": "number_literal",
-    "named": true
   },
   {
     "type": "rune_literal",

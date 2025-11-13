@@ -38,7 +38,8 @@ module.exports = grammar({
     [$.call_expression, $.index_access],
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
-    [$.type_parameter, $.enum_case]
+    [$.type_parameter, $.enum_case],
+    [$.primitive_type, $.sized_type]
   ],
 
   rules: {
@@ -204,6 +205,7 @@ module.exports = grammar({
       $.value_identifier,
       choice(
         seq(':', $.type, '=', $.expression),
+        prec(-1, seq(':', $.type)),  // Zero-value initialization (lower precedence to prefer longer match)
         seq(':=', $.expression)
       )
     ),
@@ -407,7 +409,11 @@ module.exports = grammar({
 
     parenthesized_expression: $ => seq('(', $.expression, ')'),
 
-    number_literal: $ => /\d+(\.\d+)?/,
+    number_literal: $ => choice(
+      /0x[0-9a-fA-F]+/,           // Hexadecimal: 0xFF, 0xDEADBEEF
+      /0b[01]+/,                   // Binary: 0b1010, 0b11110000
+      /\d+(\.\d+)?/                // Decimal: 123, 3.14
+    ),
 
     string_literal: $ => /"([^"\\]|\\.)*"/,
 
