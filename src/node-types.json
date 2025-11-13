@@ -440,6 +440,10 @@
           "named": true
         },
         {
+          "type": "interpolation_start",
+          "named": true
+        },
+        {
           "type": "string_literal",
           "named": true
         }
@@ -1121,6 +1125,10 @@
     "named": false
   },
   {
+    "type": "\"",
+    "named": false
+  },
+  {
     "type": "#",
     "named": false
   },
@@ -1301,12 +1309,12 @@
     "named": false
   },
   {
-    "type": "\\(",
+    "type": "_",
     "named": false
   },
   {
-    "type": "_",
-    "named": false
+    "type": "interpolation_start",
+    "named": true
   },
   {
     "type": "loop",

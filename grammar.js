@@ -31,7 +31,10 @@ module.exports = grammar({
     $.comment
   ],
 
-  externals: $ => [],
+  externals: $ => [
+    $.string_fragment,
+    $.interpolation_start
+  ],
 
   conflicts: $ => [
     [$.struct_type, $.enum_type],
@@ -454,14 +457,18 @@ module.exports = grammar({
     loop_variable: $ => /\$\d+/,
 
     interpolated_string: $ => seq(
-      $.string_literal,
+      '"',
+      optional(alias($.string_fragment, $.string_literal)),
       repeat1(seq(
-        '\\(',
+        $._interpolation_start,
         $.expression,
         ')',
-        optional($.string_literal)
-      ))
+        optional(alias($.string_fragment, $.string_literal))
+      )),
+      '"'
     ),
+    
+    _interpolation_start: $ => $.interpolation_start,
 
     parenthesized_expression: $ => seq('(', $.expression, ')'),
 
@@ -471,7 +478,16 @@ module.exports = grammar({
       /\d+(\.\d+)?/                // Decimal: 123, 3.14
     ),
 
-    string_literal: $ => /"([^"\\]|\\.)*"/,
+    // String literal without interpolation (no \( sequences)
+    // Match: escaped chars (except \(), or non-quote/non-backslash chars
+    string_literal: $ => token(seq(
+      '"',
+      repeat(choice(
+        /[^"\\]+/,                    // Any char except " or \
+        /\\[^(]/                      // Escape sequence except \(
+      )),
+      '"'
+    )),
 
     rune_literal: $ => /'([^'\\]|\\.)'/,
 

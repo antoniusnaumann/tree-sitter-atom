@@ -237,5 +237,4 @@
 
 ; String interpolation
 (interpolated_string
-  "\\(" @punctuation.special
-  ")" @punctuation.special)
+  (interpolation_start) @punctuation.special)

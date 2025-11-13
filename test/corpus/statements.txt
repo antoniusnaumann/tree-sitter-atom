@@ -293,7 +293,7 @@ Comments
     (block)))
 
 ==================
-String interpolation (allowed to fail for now)
+String interpolation
 ==================
 
 greet(name String) String {
@@ -316,6 +316,7 @@ greet(name String) String {
       (expression
         (interpolated_string
           (string_literal)
+          (interpolation_start)
           (expression
             (value_identifier))
           (string_literal))))))
