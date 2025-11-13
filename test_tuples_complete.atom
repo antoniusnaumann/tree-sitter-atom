@@ -1,0 +1,67 @@
+// Comprehensive tuple test suite for Atom language
+// This file tests all tuple-related features
+
+// Test 1: Tuple expressions with identifiers in blocks
+test_tuple_expressions(a Int, b Int) {
+    (a, b)           // Two identifiers
+    (a, 1)           // Identifier + literal
+    (1, b)           // Literal + identifier
+    (1, 2)           // Two literals
+}
+
+// Test 2: Tuple expressions in match arms
+test_match_tuples(x Int) Int, Int {
+    match(x) {
+        1 { (x, 1) }
+        2 { (2, x) }
+        _ { (x, x) }
+    }
+}
+
+// Test 3: Tuple destructuring (unparenthesized)
+test_tuple_destructuring() {
+    a, b := 1, 2
+    c, d, e := 3, 4, 5
+}
+
+// Test 4: Tuple return types
+test_tuple_return_type() Int, String {
+    (42, "hello")
+}
+
+// Test 5: Nested tuples
+test_nested_tuples() {
+    ((1, 2), (3, 4))
+}
+
+// Test 6: Tuple in variable declaration
+test_tuple_assignment(x Int) {
+    y := (x, 10)
+    z := (1, x, 20)
+}
+
+// Test 7: Multiple statements with tuples
+test_multiple_statements() {
+    x := (1, 2)
+    a, b := 3, 4
+    y := (a, b)
+}
+
+// Test 8: Function returning tuple
+returns_tuple() Int, Int {
+    (1, 2)
+}
+
+test_function_call_tuple() {
+    a, b := returns_tuple()
+}
+
+// Test 9: Tuple types as parameters
+process_tuple(t (Int, String)) Int {
+    42
+}
+
+// Test 10: Complex tuple with different types
+test_complex_tuple(x Int, s String) {
+    (x, s, 42, "test")
+}

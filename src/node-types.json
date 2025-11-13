@@ -628,6 +628,10 @@
           "named": true
         },
         {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
           "type": "pattern",
           "named": true
         },
@@ -896,10 +900,6 @@
         {
           "type": "expression",
           "named": true
-        },
-        {
-          "type": "value_identifier",
-          "named": true
         }
       ]
     }
@@ -1025,6 +1025,10 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "tuple_expression",
           "named": true
         },
         {

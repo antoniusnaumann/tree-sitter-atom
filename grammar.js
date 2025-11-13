@@ -39,7 +39,15 @@ module.exports = grammar({
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
     [$.type_parameter, $.enum_case],
-    [$.primitive_type, $.sized_type]
+    [$.primitive_type, $.sized_type],
+    [$.variable_declaration, $.expression],
+    [$.type_parameter_ref, $.expression],
+    [$.type_parameter, $.expression],
+    [$.tuple_type, $.variadic_type],
+    [$.tuple_expression],
+    [$.variadic_type],
+    [$.block],
+    [$.struct_field_init, $.expression]
   ],
 
   rules: {
@@ -109,10 +117,10 @@ module.exports = grammar({
     // Type parameter reference (lowercase identifier in type position)
     type_parameter_ref: $ => $.value_identifier,
 
-    tuple_type: $ => prec(PREC.TYPE, seq(
-      '(',
-      commaSep($.type),
-      ')'
+    tuple_type: $ => prec(PREC.TYPE, choice(
+      seq('(', commaSep($.type), ')'),
+      // Tuple without parens - must have at least 2 elements
+      prec.right(-1, seq($.type, ',', commaSep1($.type)))
     )),
 
     generic_type: $ => prec(PREC.TYPE + 3, seq(
@@ -202,12 +210,22 @@ module.exports = grammar({
 
     // Variable declaration
     variable_declaration: $ => seq(
-      $.value_identifier,
       choice(
-        seq(':', $.type, '=', $.expression),
+        $.value_identifier,
+        // Tuple destructuring without parens: a, b := expr
+        prec.dynamic(-1, seq($.value_identifier, ',', commaSep($.value_identifier)))
+      ),
+      choice(
+        seq(':', $.type, '=', $._assignable_expression),
         prec(-1, seq(':', $.type)),  // Zero-value initialization (lower precedence to prefer longer match)
-        seq(':=', $.expression)
+        seq(':=', $._assignable_expression)
       )
+    ),
+
+    // Expression that can be assigned (includes unparenthesized tuples)
+    _assignable_expression: $ => choice(
+      $.expression,
+      alias($.unparenthesized_tuple, $.tuple_expression)
     ),
 
     // Constant declaration
@@ -267,6 +285,7 @@ module.exports = grammar({
       $.number_literal,
       $.string_literal,
       seq($.type_identifier, '(', optional(commaSep($.pattern)), ')'),
+      $.parenthesized_expression,  // Allow expressions in parens as patterns (for guards)
       '_'
     ),
 
@@ -421,11 +440,15 @@ module.exports = grammar({
 
     tuple_expression: $ => prec(PREC.CALL, seq(
       '(',
-      commaSep(choice(
-        seq($.value_identifier, ':', $.expression),
-        $.expression
-      )),
+      commaSep($.expression),
       ')'
+    )),
+
+    // Unparenthesized tuple - only allowed as final expression in blocks and in assignments
+    unparenthesized_tuple: $ => prec.right(seq(
+      $.expression,
+      ',',
+      commaSep1($.expression)
     )),
 
     struct_expression: $ => prec.dynamic(-1, prec(PREC.CALL - 1, seq(
