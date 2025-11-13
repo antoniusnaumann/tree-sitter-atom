@@ -32,11 +32,8 @@ module.exports = grammar({
     [$.struct_type, $.enum_type],
     [$.call_expression, $.index_access],
     [$.struct_field, $.parameter],
-    [$.struct_field_list, $.function_definition],
-    [$._field_or_param, $.enum_case],
     [$.struct_field_list, $.enum_definition],
-    [$.struct_field_list, $.enum_definition, $.function_definition],
-    [$.enum_definition, $.function_definition]
+    [$.type_parameter, $.enum_case]
   ],
 
   rules: {
@@ -60,6 +57,13 @@ module.exports = grammar({
 
     // Identifiers
     identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    
+    // Casing-specific identifiers
+    // Type names and enum variants must start with uppercase
+    type_identifier: $ => /[A-Z][a-zA-Z0-9_]*/,
+    
+    // Function names, variables, fields, modules must start with lowercase or underscore
+    value_identifier: $ => /[a-z_][a-zA-Z0-9_]*/,
 
     // Types
     type: $ => choice(
@@ -69,7 +73,8 @@ module.exports = grammar({
       $.tuple_type,
       $.generic_type,
       $.variadic_type,
-      $.sized_type
+      $.sized_type,
+      $.type_parameter_ref  // Allow lowercase type parameters in type position
     ),
 
     primitive_type: $ => choice(
@@ -90,9 +95,12 @@ module.exports = grammar({
       ')'
     ),
 
-    struct_type: $ => $.identifier,
+    struct_type: $ => $.type_identifier,
 
-    enum_type: $ => $.identifier,
+    enum_type: $ => $.type_identifier,
+    
+    // Type parameter reference (lowercase identifier in type position)
+    type_parameter_ref: $ => $.value_identifier,
 
     tuple_type: $ => prec(PREC.TYPE, seq(
       '(',
@@ -101,7 +109,7 @@ module.exports = grammar({
     )),
 
     generic_type: $ => prec(PREC.TYPE + 3, seq(
-      $.identifier,
+      $.type_identifier,
       '(',
       commaSep($.type_parameter),
       ')'
@@ -109,7 +117,7 @@ module.exports = grammar({
 
     type_parameter: $ => choice(
       $.type,
-      seq($.identifier, '=', $.type)
+      seq(choice($.value_identifier, $.type_identifier), '=', $.type)
     ),
 
     variadic_type: $ => seq(
@@ -120,7 +128,7 @@ module.exports = grammar({
     // Struct definition
     struct_definition: $ => prec.dynamic(2, seq(
       optional($.visibility),
-      $.identifier,
+      $.type_identifier,
       $.struct_field_list
     )),
 
@@ -137,20 +145,20 @@ module.exports = grammar({
     visibility: $ => choice('+', '-'),
 
     _field_or_param: $ => choice(
-      seq($.identifier, $.type),
-      seq($.identifier, $.type, '=', $.expression),
-      seq('..', $.identifier)
+      seq($.value_identifier, $.type),
+      seq($.value_identifier, $.type, '=', $.expression),
+      seq('..', $.type_identifier)
     ),
 
     struct_field: $ => prec.dynamic(2, choice(
-      seq($.identifier, $.type),
-      seq('..', $.identifier)
+      seq($.value_identifier, $.type),
+      seq('..', $.type_identifier)
     )),
 
     // Enum definition
     enum_definition: $ => seq(
       optional($.visibility),
-      $.identifier,
+      $.type_identifier,
       '(',
       optional(seq(commaSep($.type_parameter), ';')),
       repeat($.enum_case),
@@ -158,14 +166,14 @@ module.exports = grammar({
     ),
 
     enum_case: $ => choice(
-      seq($.identifier, '(', optional(commaSep($.type)), ')'),
-      $.identifier
+      seq($.type_identifier, '(', optional(commaSep($.type)), ')'),
+      $.type_identifier
     ),
 
     // Function definition
     function_definition: $ => prec.dynamic(3, seq(
       optional($.visibility),
-      $.identifier,
+      $.value_identifier,
       '(',
       optional(seq(commaSep($.type_parameter), ';')),
       optional(seq(
@@ -179,15 +187,15 @@ module.exports = grammar({
     )),
 
     parameter: $ => prec.dynamic(-1, prec(PREC.TYPE, choice(
-      seq($.identifier, $.type),
-      seq($.identifier, $.type, '=', $.expression)
+      seq($.value_identifier, $.type),
+      seq($.value_identifier, $.type, '=', $.expression)
     ))),
 
     return_type: $ => $.type,
 
     // Variable declaration
     variable_declaration: $ => seq(
-      $.identifier,
+      $.value_identifier,
       choice(
         seq(':', $.type, '=', $.expression),
         seq(':=', $.expression)
@@ -196,7 +204,7 @@ module.exports = grammar({
 
     // Constant declaration
     constant_declaration: $ => seq(
-      $.identifier,
+      $.value_identifier,
       '=',
       $.expression
     ),
@@ -247,10 +255,10 @@ module.exports = grammar({
     ),
 
     pattern: $ => choice(
-      $.identifier,
+      $.value_identifier,
       $.number_literal,
       $.string_literal,
-      seq($.identifier, '(', optional(commaSep($.pattern)), ')'),
+      seq($.type_identifier, '(', optional(commaSep($.pattern)), ')'),
       '_'
     ),
 
@@ -267,13 +275,15 @@ module.exports = grammar({
       $.namespace_access,
       $.index_access,
       $.struct_expression,
+      $.enum_expression,
       $.interpolated_string,
       $.tuple_expression,
       $.closure,
       $.block,
       $.parenthesized_expression,
       $.loop_variable,
-      $.identifier,
+      $.value_identifier,
+      $.type_identifier,
       $.number_literal,
       $.string_literal,
       $.rune_literal
@@ -329,7 +339,7 @@ module.exports = grammar({
     method_call: $ => prec(PREC.CALL, seq(
       $.expression,
       '.',
-      $.identifier,
+      $.value_identifier,
       '(',
       optional(commaSep($.expression)),
       ')'
@@ -349,13 +359,13 @@ module.exports = grammar({
     field_access: $ => prec(PREC.FIELD, seq(
       $.expression,
       '.',
-      $.identifier
+      $.value_identifier
     )),
 
     namespace_access: $ => prec(PREC.FIELD + 1, seq(
       $.expression,
       '::',
-      $.identifier
+      choice($.value_identifier, $.type_identifier, '*')
     )),
 
     index_access: $ => prec(PREC.CALL, seq(
@@ -396,7 +406,7 @@ module.exports = grammar({
     tuple_expression: $ => prec(PREC.CALL, seq(
       '(',
       commaSep(choice(
-        seq($.identifier, ':', $.expression),
+        seq($.value_identifier, ':', $.expression),
         $.expression
       )),
       ')'
@@ -409,10 +419,10 @@ module.exports = grammar({
       ')'
     ))),
 
-    struct_field_init: $ => seq($.identifier, ':', $.expression),
+    struct_field_init: $ => seq($.value_identifier, ':', $.expression),
 
     enum_expression: $ => prec.left(PREC.TYPE + 2, seq(
-      $.identifier,
+      $.type_identifier,
       optional(seq('(', optional(commaSep($.expression)), ')'))
     )),
 
@@ -432,8 +442,8 @@ module.exports = grammar({
 
     // Import statements
     import_statement: $ => choice(
-      seq($.identifier, '::*'),
-      seq($.identifier, '::(', commaSep($.identifier), ')')
+      seq($.value_identifier, '::*'),
+      seq($.value_identifier, '::(', commaSep(choice($.value_identifier, $.type_identifier)), ')')
     )
   }
 });

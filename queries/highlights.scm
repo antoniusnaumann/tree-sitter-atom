@@ -15,44 +15,44 @@
 
 ; Struct and enum definitions - capture first identifier only
 (struct_definition
-  (identifier) @type.definition)
+  (type_identifier) @type.definition)
 
 (enum_definition
-  (identifier) @type.definition)
+  (type_identifier) @type.definition)
 
 ; Function definitions - capture first identifier only
 (function_definition
-  (identifier) @function.definition)
+  (value_identifier) @function.definition)
 
 ; Variable declarations
 (variable_declaration
-  (identifier) @variable)
+  (value_identifier) @variable)
 
 ; Constant declarations
 (constant_declaration
-  (identifier) @constant)
+  (value_identifier) @constant)
 
 ; Parameters
 (parameter
-  (identifier) @variable.parameter)
+  (value_identifier) @variable.parameter)
 
 ; Struct fields
 (struct_field
-  (identifier) @variable.other.member)
+  (value_identifier) @variable.other.member)
 
 ; Struct field initialization
 (struct_field_init
-  (identifier) @variable.other.member)
+  (value_identifier) @variable.other.member)
 
 ; Enum cases
 (enum_case
-  (identifier) @type.enum.variant)
+  (type_identifier) @type.enum.variant)
 
 ; Match patterns - enum constructors (first identifier in pattern)
 (match_arm
   (pattern
     .
-    (identifier) @type.enum.variant))
+    (type_identifier) @type.enum.variant))
 
 ; Operators
 [
@@ -134,32 +134,37 @@
 ; Field access - general pattern (will be overridden by more specific patterns below)
 (field_access
   "." @punctuation.delimiter
-  (identifier) @variable.other.member)
+  (value_identifier) @variable.other.member)
 
 ; Regular namespace access - for non-function contexts
 ; Only highlight the left side (before ::) as namespace
 (namespace_access
   (expression
-    (identifier) @namespace)
+    (value_identifier) @namespace)
   "::")
 
-; Struct expressions - highlight type name
+; Struct expressions - highlight type name  
 (struct_expression
   .
   (expression
-    (identifier) @type))
+    (enum_expression
+      (type_identifier) @type)))
+
+; Enum expressions - highlight enum variant/type name
+(enum_expression
+  (type_identifier) @type)
 
 ; Method calls
 (method_call
   "." @punctuation.delimiter
-  (identifier) @function.method)
+  (value_identifier) @function.method)
 
 ; Call expressions - match function identifiers only (first expression)
 ; Use . to anchor the pattern to the first child
 (call_expression
   .
   (expression
-    (identifier) @function.call))
+    (value_identifier) @function.call))
 
 ; Match as a function call (statement form)
 (match_statement
@@ -182,8 +187,8 @@
   (expression
     (namespace_access
       (expression
-        (identifier) @namespace)
-      (identifier) @function.call)))
+        (value_identifier) @namespace)
+      (value_identifier) @function.call)))
 
 ; UFCS with namespace (e.g., x.cmath::cos()) - MORE SPECIFIC, comes after general patterns
 ; When namespace_access is first child of call_expression:
@@ -196,32 +201,23 @@
       (expression
         (field_access
           (expression)
-          (identifier) @namespace))
-      (identifier) @function.call)))
+          (value_identifier) @namespace))
+      (value_identifier) @function.call)))
 
-; Type annotations - use struct_type and enum_type
-; Uppercase identifiers in types are actual types
+; Type annotations
 (struct_type
-  (identifier) @type
-  (#match? @type "^[A-Z]"))
+  (type_identifier) @type)
 
 (enum_type
-  (identifier) @type
-  (#match? @type "^[A-Z]"))
+  (type_identifier) @type)
 
-; Type parameters - lowercase identifiers in type positions (like Gleam)
-; This must come AFTER the uppercase type rules to override for lowercase
-(struct_type
-  (identifier) @type.parameter
-  (#match? @type.parameter "^[a-z]"))
-
-(enum_type
-  (identifier) @type.parameter
-  (#match? @type.parameter "^[a-z]"))
+; Type parameters - lowercase identifiers in type positions
+(type_parameter_ref
+  (value_identifier) @type.parameter)
 
 ; Generic types
 (generic_type
-  (identifier) @type)
+  (type_identifier) @type)
 
 ; Tuple types
 (tuple_type) @type
