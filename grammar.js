@@ -358,7 +358,11 @@ module.exports = grammar({
       '(',
       ')',
       '{',
-      commaSep($.match_arm),
+      optional(seq(
+        $.match_arm,
+        repeat(seq(optional(','), $.match_arm)),
+        optional(',')
+      )),
       '}'
     )),
 
