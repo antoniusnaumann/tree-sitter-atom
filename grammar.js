@@ -49,7 +49,9 @@ module.exports = grammar({
     [$.block],
     [$.struct_field_init, $.expression],
     [$.statement, $.expression],  // assignment_expression can be both
-    [$.pattern, $.expression]  // patterns can be expressions (for match guards)
+    [$.pattern, $.expression],  // patterns can be expressions (for match guards)
+    [$.pattern, $.enum_expression],  // enum destructuring vs enum construction
+    [$.pattern, $.call_expression]  // enum destructuring vs function call
   ],
 
   rules: {
@@ -277,20 +279,52 @@ module.exports = grammar({
       '}'
     ),
 
-    match_arm: $ => seq(
+    match_arm: $ => prec.dynamic(1, seq(
       $.pattern,
       $.block
-    ),
+    )),
 
     pattern: $ => choice(
+      prec.dynamic(2, seq($.type_identifier, '(', optional(commaSep($.pattern)), ')')),  // Enum destructuring - prefer this
       $.value_identifier,
       $.type_identifier,
       $.number_literal,
       $.string_literal,
-      seq($.type_identifier, '(', optional(commaSep($.pattern)), ')'),
-      $.expression,  // Allow expressions as patterns (for guards)
+      $.pattern_guard,  // Guard expressions like: b & 0xFF == 0
+      $.parenthesized_expression,
       '_'
     ),
+
+    // Pattern guards - binary expressions that can be used as patterns
+    // but excluding things that could be confused with enum destructuring
+    pattern_guard: $ => prec.dynamic(-1, choice(
+      ...[
+        ['||', PREC.LOGICAL_OR],
+        ['&&', PREC.LOGICAL_AND],
+        ['==', PREC.EQUAL],
+        ['!=', PREC.EQUAL],
+        ['<', PREC.COMPARE],
+        ['<=', PREC.COMPARE],
+        ['>', PREC.COMPARE],
+        ['>=', PREC.COMPARE],
+        ['|', PREC.BITWISE_OR],
+        ['&', PREC.BITWISE_AND],
+        ['<<', PREC.SHIFT],
+        ['>>', PREC.SHIFT],
+        ['+', PREC.ADD],
+        ['-', PREC.ADD],
+        ['*', PREC.MULTIPLY],
+        ['/', PREC.MULTIPLY],
+        ['%', PREC.MULTIPLY],
+        ['~', PREC.CONCAT]
+      ].map(([operator, precedence]) =>
+        prec.left(precedence, seq(
+          field('left', choice($.value_identifier, $.number_literal, $.pattern_guard)),
+          operator,
+          field('right', choice($.value_identifier, $.number_literal, $.pattern_guard))
+        ))
+      )
+    )),
 
     // Expressions (ordered by precedence, highest first)
     expression: $ => choice(
