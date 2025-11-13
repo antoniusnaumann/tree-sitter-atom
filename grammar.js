@@ -26,6 +26,11 @@ module.exports = grammar({
 
   word: $ => $.value_identifier,
 
+  extras: $ => [
+    /\s/,  // whitespace
+    $.comment
+  ],
+
   externals: $ => [],
 
   conflicts: $ => [
@@ -179,7 +184,7 @@ module.exports = grammar({
       optional(seq(commaSep($.type_parameter), ';')),
       optional(seq(
         alias($._field_or_param, $.parameter),
-        repeat(seq(',', alias($._field_or_param, $.parameter))),
+        repeat(seq(optional(','), alias($._field_or_param, $.parameter))),
         optional(',')
       )),
       ')',
@@ -205,7 +210,7 @@ module.exports = grammar({
 
     // Constant declaration
     constant_declaration: $ => seq(
-      $.value_identifier,
+      choice($.value_identifier, $.type_identifier),
       '=',
       $.expression
     ),
@@ -213,8 +218,7 @@ module.exports = grammar({
     // Block
     block: $ => seq(
       '{',
-      repeat($.statement),
-      optional($.expression),
+      repeat(choice($.statement, $.expression)),
       '}'
     ),
 
