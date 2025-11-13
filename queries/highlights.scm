@@ -161,6 +161,18 @@
   (expression
     (identifier) @function.call))
 
+; Match as a function call (statement form)
+(match_statement
+  "match" @function.call)
+
+; Match as a function call (UFCS form)
+(member_match_expression
+  "match" @function.call)
+
+; Loop as a function call
+(loop_statement
+  "loop" @function.call)
+
 ; Regular namespace function calls (e.g., math::sin())
 ; When namespace_access is first child of call_expression:
 ; - The first identifier (before ::) should be @namespace

@@ -118,11 +118,11 @@ module.exports = grammar({
     ),
 
     // Struct definition
-    struct_definition: $ => prec(100, prec.dynamic(2, seq(
+    struct_definition: $ => prec.dynamic(2, seq(
       optional($.visibility),
       $.identifier,
       $.struct_field_list
-    ))),
+    )),
 
     struct_field_list: $ => seq(
       '(',
