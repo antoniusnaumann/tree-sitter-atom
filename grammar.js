@@ -48,7 +48,8 @@ module.exports = grammar({
     [$.variadic_type],
     [$.block],
     [$.struct_field_init, $.expression],
-    [$.statement, $.expression]  // assignment_expression can be both
+    [$.statement, $.expression],  // assignment_expression can be both
+    [$.pattern, $.expression]  // patterns can be expressions (for match guards)
   ],
 
   rules: {
@@ -287,7 +288,7 @@ module.exports = grammar({
       $.number_literal,
       $.string_literal,
       seq($.type_identifier, '(', optional(commaSep($.pattern)), ')'),
-      $.parenthesized_expression,  // Allow expressions in parens as patterns (for guards)
+      $.expression,  // Allow expressions as patterns (for guards)
       '_'
     ),
 

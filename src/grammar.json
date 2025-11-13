@@ -1400,7 +1400,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "parenthesized_expression"
+          "name": "expression"
         },
         {
           "type": "STRING",
@@ -3041,6 +3041,10 @@
     ],
     [
       "statement",
+      "expression"
+    ],
+    [
+      "pattern",
       "expression"
     ]
   ],

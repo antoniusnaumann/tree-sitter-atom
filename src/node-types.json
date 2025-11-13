@@ -624,11 +624,11 @@
       "required": false,
       "types": [
         {
-          "type": "number_literal",
+          "type": "expression",
           "named": true
         },
         {
-          "type": "parenthesized_expression",
+          "type": "number_literal",
           "named": true
         },
         {
