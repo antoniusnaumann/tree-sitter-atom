@@ -465,3 +465,102 @@ Enum case with multiple type parameters
       (type
         (type_parameter_ref
           (value_identifier))))))
+
+==================
+Static array with comptime variable
+==================
+
++len(n Int; arr t*n) Int {
+    n
+}
+
+---
+
+(source_file
+  (function_definition
+    (visibility)
+    (value_identifier)
+    (type_parameter
+      (value_identifier)
+      (type
+        (primitive_type)))
+    (parameter
+      (value_identifier)
+      (type
+        (static_array_type
+          (type
+            (type_parameter_ref
+              (value_identifier)))
+          (value_identifier))))
+    (return_type
+      (type
+        (primitive_type)))
+    (block
+      (expression
+        (value_identifier)))))
+
+==================
+Static array with comptime expression
+==================
+
+Matrix(
+  shape (Int, Int);
+  fields Int*shape(0) * shape(1)
+)
+
+---
+
+(source_file
+  (struct_definition
+    (type_identifier)
+    (struct_field_list
+      (type_parameter
+        (value_identifier)
+        (type
+          (tuple_type
+            (type
+              (primitive_type))
+            (type
+              (primitive_type)))))
+      (struct_field
+        (value_identifier)
+        (type
+          (static_array_type
+            (type
+              (primitive_type))
+            (expression
+              (binary_expression
+                (expression
+                  (call_expression
+                    (expression
+                      (value_identifier))
+                    (expression
+                      (number_literal))))
+                (expression
+                  (call_expression
+                    (expression
+                      (value_identifier))
+                    (expression
+                      (number_literal))))))))))))
+
+==================
+Static array with numeric literal
+==================
+
++FixedArray(values Int*10)
+
+---
+
+(source_file
+  (struct_definition
+    (visibility)
+    (type_identifier)
+    (struct_field_list
+      (struct_field
+        (value_identifier)
+        (type
+          (static_array_type
+            (type
+              (primitive_type))
+            (expression
+              (number_literal))))))))

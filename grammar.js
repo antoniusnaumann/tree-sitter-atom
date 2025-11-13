@@ -38,10 +38,13 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.struct_type, $.enum_type],
+    [$.struct_definition, $.enum_definition],
     [$.call_expression, $.index_access],
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
     [$.type_parameter, $.enum_case],
+    [$.type_parameter, $.parameter],
+    [$.type_parameter, $._field_or_param],
     [$.primitive_type, $.sized_type],
     [$.variable_declaration, $.expression],
     [$.type_parameter_ref, $.expression],
@@ -49,6 +52,7 @@ module.exports = grammar({
     [$.tuple_type, $.variadic_type],
     [$.tuple_expression],
     [$.variadic_type],
+    [$.variadic_type, $.static_array_type],
     [$.block],
     [$.struct_field_init, $.expression],
     [$.statement, $.expression],  // assignment_expression can be both
@@ -95,6 +99,7 @@ module.exports = grammar({
       $.tuple_type,
       $.generic_type,
       $.variadic_type,
+      $.static_array_type,
       $.sized_type,
       $.type_parameter_ref  // Allow lowercase type parameters in type position
     ),
@@ -139,13 +144,23 @@ module.exports = grammar({
 
     type_parameter: $ => choice(
       $.type,
-      seq(choice($.value_identifier, $.type_identifier), '=', $.type)
+      seq($.value_identifier, $.type),  // Explicit const parameter: n Int
+      seq(choice($.value_identifier, $.type_identifier), '=', $.type)  // With default: e = String
     ),
 
-    variadic_type: $ => seq(
+    variadic_type: $ => prec.dynamic(-1, prec.left(1, seq(
       $.type,
       choice('*', '+')
-    ),
+    ))),
+
+    static_array_type: $ => prec.dynamic(1, prec.right(2, seq(
+      $.type,
+      '*',
+      choice(
+        $.value_identifier,  // Comptime variable: t*n
+        $.expression         // Comptime expression: t*(shape(0) * shape(1)) or t*10
+      )
+    ))),
 
     // Struct definition
     struct_definition: $ => prec.dynamic(2, seq(
@@ -156,6 +171,7 @@ module.exports = grammar({
 
     struct_field_list: $ => seq(
       '(',
+      optional(seq(commaSep($.type_parameter), ';')),
       optional(seq(
         alias($._field_or_param, $.struct_field),
         repeat(seq(',', alias($._field_or_param, $.struct_field))),

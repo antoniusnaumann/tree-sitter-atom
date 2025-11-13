@@ -807,6 +807,29 @@
     }
   },
   {
+    "type": "static_array_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        },
+        {
+          "type": "value_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "struct_definition",
     "named": true,
     "fields": {},
@@ -905,6 +928,10 @@
         {
           "type": "struct_field",
           "named": true
+        },
+        {
+          "type": "type_parameter",
+          "named": true
         }
       ]
     }
@@ -995,6 +1022,10 @@
         },
         {
           "type": "sized_type",
+          "named": true
+        },
+        {
+          "type": "static_array_type",
           "named": true
         },
         {

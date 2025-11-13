@@ -111,6 +111,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "static_array_type"
+        },
+        {
+          "type": "SYMBOL",
           "name": "sized_type"
         },
         {
@@ -364,6 +368,19 @@
           "type": "SEQ",
           "members": [
             {
+              "type": "SYMBOL",
+              "name": "value_identifier"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "type"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
               "type": "CHOICE",
               "members": [
                 {
@@ -389,26 +406,68 @@
       ]
     },
     "variadic_type": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "type"
-        },
-        {
-          "type": "CHOICE",
+      "type": "PREC_DYNAMIC",
+      "value": -1,
+      "content": {
+        "type": "PREC_LEFT",
+        "value": 1,
+        "content": {
+          "type": "SEQ",
           "members": [
+            {
+              "type": "SYMBOL",
+              "name": "type"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "*"
+                },
+                {
+                  "type": "STRING",
+                  "value": "+"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "static_array_type": {
+      "type": "PREC_DYNAMIC",
+      "value": 1,
+      "content": {
+        "type": "PREC_RIGHT",
+        "value": 2,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "type"
+            },
             {
               "type": "STRING",
               "value": "*"
             },
             {
-              "type": "STRING",
-              "value": "+"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "value_identifier"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              ]
             }
           ]
         }
-      ]
+      }
     },
     "struct_definition": {
       "type": "PREC_DYNAMIC",
@@ -445,6 +504,56 @@
         {
           "type": "STRING",
           "value": "("
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "type_parameter"
+                        },
+                        {
+                          "type": "REPEAT",
+                          "content": {
+                            "type": "SEQ",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": ","
+                              },
+                              {
+                                "type": "SYMBOL",
+                                "name": "type_parameter"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ";"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "CHOICE",
@@ -4060,6 +4169,10 @@
       "enum_type"
     ],
     [
+      "struct_definition",
+      "enum_definition"
+    ],
+    [
       "call_expression",
       "index_access"
     ],
@@ -4074,6 +4187,14 @@
     [
       "type_parameter",
       "enum_case"
+    ],
+    [
+      "type_parameter",
+      "parameter"
+    ],
+    [
+      "type_parameter",
+      "_field_or_param"
     ],
     [
       "primitive_type",
@@ -4100,6 +4221,10 @@
     ],
     [
       "variadic_type"
+    ],
+    [
+      "variadic_type",
+      "static_array_type"
     ],
     [
       "block"
