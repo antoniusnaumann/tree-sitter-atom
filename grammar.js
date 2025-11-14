@@ -60,7 +60,9 @@ module.exports = grammar({
     [$.pattern, $.enum_expression],  // enum destructuring vs enum construction
     [$.pattern, $.call_expression],  // enum destructuring vs function call
     [$._field_or_param, $.binary_expression],  // comma in default values vs field separator
-    [$.struct_field_init, $.binary_expression]  // comma in field init vs field separator
+    [$.struct_field_init, $.binary_expression],  // comma in field init vs field separator
+    [$.call_expression, $.struct_expression],  // trailing closure vs struct init
+    [$.call_expression]  // trailing closure vs call followed by block
   ],
 
   rules: {
@@ -269,22 +271,10 @@ module.exports = grammar({
       $.variable_declaration,
       $.assignment_expression,  // Assignments can be statements
       $.expression_statement,
-      $.loop_statement,
       $.match_statement
     ),
 
     expression_statement: $ => seq($.expression, ';'),
-
-    // Loop
-    loop_statement: $ => prec(PREC.DECLARATION, seq(
-      'loop',
-      optional(choice(
-        $.expression,
-        seq('(', $.expression, ')'),
-        seq('(', $.number_literal, ')')
-      )),
-      $.block
-    )),
 
     // Match
     match_statement: $ => seq(
@@ -411,11 +401,12 @@ module.exports = grammar({
       $.expression
     )),
 
-    call_expression: $ => prec.dynamic(1, prec(PREC.CALL, seq(
+    call_expression: $ => prec.dynamic(1, prec.right(PREC.CALL, seq(
       $.expression,
       '(',
       optional($.expression),  // Comma operator handles multiple arguments
-      ')'
+      ')',
+      optional($.block)  // Trailing closure syntax
     ))),
 
     method_call: $ => prec(PREC.CALL, seq(

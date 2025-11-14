@@ -68,6 +68,10 @@
       "required": true,
       "types": [
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         }
@@ -428,29 +432,6 @@
     }
   },
   {
-    "type": "loop_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "block",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "number_literal",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "match_arm",
     "named": true,
     "fields": {},
@@ -766,10 +747,6 @@
         },
         {
           "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "loop_statement",
           "named": true
         },
         {
@@ -1304,10 +1281,6 @@
   {
     "type": "interpolation_start",
     "named": true
-  },
-  {
-    "type": "loop",
-    "named": false
   },
   {
     "type": "loop_variable",

@@ -231,8 +231,10 @@ sum(values Int*) Int {
           (value_identifier)
           (expression
             (number_literal))))
-      (statement
-        (loop_statement
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))
           (expression
             (value_identifier))
           (block
