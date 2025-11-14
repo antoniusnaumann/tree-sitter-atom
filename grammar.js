@@ -1,5 +1,6 @@
 // Precedences (higher number = higher precedence = binds tighter)
 const PREC = {
+  COMMA: 0,        // , (tuple creation - lowest precedence)
   CONCAT: 1,
   LOGICAL_OR: 2,
   LOGICAL_AND: 3,
@@ -50,7 +51,7 @@ module.exports = grammar({
     [$.type_parameter_ref, $.expression],
     [$.type_parameter, $.expression],
     [$.tuple_type, $.variadic_type],
-    [$.tuple_expression],
+    // [$.tuple_expression],  // Removed - using comma operator instead
     [$.variadic_type],
     [$.variadic_type, $.static_array_type],
     [$.block],
@@ -58,7 +59,9 @@ module.exports = grammar({
     [$.statement, $.expression],  // assignment_expression can be both
     [$.pattern, $.expression],  // patterns can be expressions (for match guards)
     [$.pattern, $.enum_expression],  // enum destructuring vs enum construction
-    [$.pattern, $.call_expression]  // enum destructuring vs function call
+    [$.pattern, $.call_expression],  // enum destructuring vs function call
+    [$._field_or_param, $.binary_expression],  // comma in default values vs field separator
+    [$.struct_field_init, $.binary_expression]  // comma in field init vs field separator
   ],
 
   rules: {
@@ -245,11 +248,8 @@ module.exports = grammar({
       )
     ),
 
-    // Expression that can be assigned (includes unparenthesized tuples)
-    _assignable_expression: $ => choice(
-      $.expression,
-      alias($.unparenthesized_tuple, $.tuple_expression)
-    ),
+    // Expression that can be assigned (comma operator creates tuples)
+    _assignable_expression: $ => $.expression,
 
     // Constant declaration
     constant_declaration: $ => seq(
@@ -360,7 +360,7 @@ module.exports = grammar({
       $.struct_expression,
       $.enum_expression,
       $.interpolated_string,
-      $.tuple_expression,
+      // tuple_expression removed - tuples are created by comma binary operator
       $.closure,
       $.block,
       $.parenthesized_expression,
@@ -380,6 +380,7 @@ module.exports = grammar({
 
     binary_expression: $ => choice(
       ...[
+        [',', PREC.COMMA],       // Tuple creation - lowest precedence
         ['||', PREC.LOGICAL_OR],
         ['&&', PREC.LOGICAL_AND],
         ['==', PREC.EQUAL],
@@ -415,7 +416,7 @@ module.exports = grammar({
     call_expression: $ => prec.dynamic(1, prec(PREC.CALL, seq(
       $.expression,
       '(',
-      optional(commaSep($.expression)),
+      optional($.expression),  // Comma operator handles multiple arguments
       ')'
     ))),
 
@@ -424,7 +425,7 @@ module.exports = grammar({
       '.',
       $.value_identifier,
       '(',
-      optional(commaSep($.expression)),
+      optional($.expression),  // Comma operator handles multiple arguments
       ')'
     )),
 
@@ -468,7 +469,7 @@ module.exports = grammar({
       $.expression
     )),
 
-    comptime_expression: $ => seq('#', $.expression),
+    comptime_expression: $ => prec(PREC.UNARY, seq('#', $.expression)),
 
     loop_variable: $ => /\$\d+/,
 
@@ -507,19 +508,6 @@ module.exports = grammar({
 
     rune_literal: $ => /'([^'\\]|\\.)'/,
 
-    tuple_expression: $ => prec(PREC.CALL, seq(
-      '(',
-      commaSep($.expression),
-      ')'
-    )),
-
-    // Unparenthesized tuple - only allowed as final expression in blocks and in assignments
-    unparenthesized_tuple: $ => prec.right(seq(
-      $.expression,
-      ',',
-      commaSep1($.expression)
-    )),
-
     struct_expression: $ => prec.dynamic(-1, prec(PREC.CALL - 1, seq(
       $.expression,
       '(',
@@ -531,7 +519,7 @@ module.exports = grammar({
 
     enum_expression: $ => prec.left(PREC.TYPE + 2, seq(
       $.type_identifier,
-      optional(seq('(', optional(commaSep($.expression)), ')'))
+      optional(seq('(', optional($.expression), ')'))  // Comma operator handles multiple args
     )),
 
     closure: $ => seq(

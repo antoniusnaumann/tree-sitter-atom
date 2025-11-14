@@ -306,10 +306,6 @@
           "named": true
         },
         {
-          "type": "tuple_expression",
-          "named": true
-        },
-        {
           "type": "type_identifier",
           "named": true
         },
@@ -971,21 +967,6 @@
     }
   },
   {
-    "type": "tuple_expression",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "tuple_type",
     "named": true,
     "fields": {},
@@ -1110,10 +1091,6 @@
       "types": [
         {
           "type": "expression",
-          "named": true
-        },
-        {
-          "type": "tuple_expression",
           "named": true
         },
         {

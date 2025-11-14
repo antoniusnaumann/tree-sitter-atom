@@ -126,9 +126,11 @@ main() {
               (expression
                 (value_identifier))
               (expression
-                (number_literal))
-              (expression
-                (number_literal)))))))))
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal)))))))))))
 
 ==================
 Match statement
@@ -268,9 +270,11 @@ Test block
                   (expression
                     (value_identifier))
                   (expression
-                    (number_literal))
-                  (expression
-                    (number_literal))))
+                    (binary_expression
+                      (expression
+                        (number_literal))
+                      (expression
+                        (number_literal))))))
                (expression
                 (number_literal)))))))))
 
@@ -496,10 +500,12 @@ Using enum cases as arguments
               (expression
                 (value_identifier))
               (expression
-                (value_identifier))
-              (expression
-                (enum_expression
-                  (type_identifier)))))))
+                (binary_expression
+                  (expression
+                    (value_identifier))
+                  (expression
+                    (enum_expression
+                      (type_identifier)))))))))
       (expression
         (call_expression
           (expression
@@ -507,3 +513,285 @@ Using enum cases as arguments
           (expression
             (enum_expression
               (type_identifier))))))))
+
+==================
+Comma operator - parenthesized single value vs tuple
+==================
+
+test() {
+    a := (5)
+    b := (1, 2)
+    c := (1, 2, 3)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (number_literal))))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (binary_expression
+                      (expression
+                        (number_literal))
+                      (expression
+                        (number_literal))))
+                  (expression
+                    (number_literal)))))))))))
+
+==================
+Comma operator - unparenthesized tuple in assignment
+==================
+
+test() {
+    a, b := get_pair()
+    x, y, z := 1, 2, 3
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (value_identifier)
+          (expression
+            (call_expression
+              (expression
+                (value_identifier))))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (value_identifier)
+          (value_identifier)
+          (expression
+            (binary_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))
+              (expression
+                (number_literal)))))))))
+
+==================
+Comma operator - function calls with tuples
+==================
+
+test() {
+    foo()
+    bar(1)
+    baz(1, 2)
+    qux(1, 2, 3, 4)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))))
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))
+          (expression
+            (number_literal))))
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))
+          (expression
+            (binary_expression
+              (expression
+                (number_literal))
+              (expression
+                (number_literal))))))
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))
+          (expression
+            (binary_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (binary_expression
+                      (expression
+                        (number_literal))
+                      (expression
+                        (number_literal))))
+                  (expression
+                    (number_literal))))
+              (expression
+                (number_literal)))))))))
+
+==================
+Comma operator - nested tuples
+==================
+
+test() {
+    nested := ((1, 2), (3, 4))
+    triple := (a, (b, c), d)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (parenthesized_expression
+                      (expression
+                        (binary_expression
+                          (expression
+                            (number_literal))
+                          (expression
+                            (number_literal))))))
+                  (expression
+                    (parenthesized_expression
+                      (expression
+                        (binary_expression
+                          (expression
+                            (number_literal))
+                          (expression
+                            (number_literal))))))))))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (binary_expression
+                      (expression
+                        (value_identifier))
+                      (expression
+                        (parenthesized_expression
+                          (expression
+                            (binary_expression
+                              (expression
+                                (value_identifier))
+                              (expression
+                                (value_identifier))))))))
+                  (expression
+                    (value_identifier)))))))))))
+
+==================
+Comma operator - tuple as block final expression
+==================
+
+test() {
+    {
+        a, b
+    }
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (expression
+        (block
+          (expression
+            (binary_expression
+              (expression
+                (value_identifier))
+              (expression
+                (value_identifier)))))))))
+
+==================
+Comma operator - precedence with other operators
+==================
+
+test() {
+    a := 1 + 2, 3 + 4
+    b := (1 + 2, 3 * 4)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (binary_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))
+              (expression
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (parenthesized_expression
+              (expression
+                (binary_expression
+                  (expression
+                    (binary_expression
+                      (expression
+                        (number_literal))
+                      (expression
+                        (number_literal))))
+                  (expression
+                    (binary_expression
+                      (expression
+                        (number_literal))
+                      (expression
+                        (number_literal)))))))))))))
