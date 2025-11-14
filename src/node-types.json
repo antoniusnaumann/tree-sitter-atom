@@ -262,10 +262,6 @@
           "named": true
         },
         {
-          "type": "index_access",
-          "named": true
-        },
-        {
           "type": "interpolated_string",
           "named": true
         },
@@ -403,21 +399,6 @@
         },
         {
           "type": "type_parameter",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "index_access",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
           "named": true
         }
       ]

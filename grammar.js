@@ -40,7 +40,6 @@ module.exports = grammar({
   conflicts: $ => [
     [$.struct_type, $.enum_type],
     [$.struct_definition, $.enum_definition],
-    [$.call_expression, $.index_access],
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
     [$.type_parameter, $.enum_case],
@@ -356,7 +355,6 @@ module.exports = grammar({
       $.method_call,
       $.field_access,
       $.namespace_access,
-      $.index_access,
       $.struct_expression,
       $.enum_expression,
       $.interpolated_string,
@@ -454,13 +452,6 @@ module.exports = grammar({
       $.expression,
       '::',
       choice($.value_identifier, $.type_identifier, '*')
-    )),
-
-    index_access: $ => prec(PREC.CALL, seq(
-      $.expression,
-      '(',
-      $.expression,
-      ')'
     )),
 
     assignment_expression: $ => prec.right(PREC.ASSIGN, seq(

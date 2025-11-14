@@ -2555,10 +2555,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "index_access"
-        },
-        {
-          "type": "SYMBOL",
           "name": "struct_expression"
         },
         {
@@ -3429,31 +3425,6 @@
         ]
       }
     },
-    "index_access": {
-      "type": "PREC",
-      "value": 13,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "expression"
-          },
-          {
-            "type": "STRING",
-            "value": "("
-          },
-          {
-            "type": "SYMBOL",
-            "name": "expression"
-          },
-          {
-            "type": "STRING",
-            "value": ")"
-          }
-        ]
-      }
-    },
     "assignment_expression": {
       "type": "PREC_RIGHT",
       "value": 14,
@@ -4007,10 +3978,6 @@
     [
       "struct_definition",
       "enum_definition"
-    ],
-    [
-      "call_expression",
-      "index_access"
     ],
     [
       "struct_field",
