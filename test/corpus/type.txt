@@ -491,7 +491,8 @@ Static array with comptime variable
           (type
             (type_parameter_ref
               (value_identifier)))
-          (value_identifier))))
+          (expression
+            (value_identifier)))))
     (return_type
       (type
         (primitive_type)))

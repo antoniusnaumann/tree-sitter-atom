@@ -63,7 +63,9 @@ module.exports = grammar({
     [$.struct_field_init, $.binary_expression],  // comma in field init vs field separator
     [$.call_expression, $.struct_expression],  // trailing closure vs struct init
     [$.call_expression],  // trailing closure vs call followed by block
-    [$.method_call]  // trailing closure vs method call followed by block
+    [$.method_call],  // trailing closure vs method call followed by block
+    [$._static_array_size_expr, $.expression],  // static array size vs general expression
+    [$.type, $._non_array_type]  // primitive_type etc. can be either type or _non_array_type
   ],
 
   rules: {
@@ -158,14 +160,47 @@ module.exports = grammar({
       choice('*', '+')
     ))),
 
-    static_array_type: $ => prec.dynamic(1, prec.right(2, seq(
-      $.type,
+    static_array_type: $ => prec.dynamic(1, seq(
+      field('element', alias($._non_array_type, $.type)),
       '*',
-      choice(
-        $.value_identifier,  // Comptime variable: t*n
-        $.expression         // Comptime expression: t*(shape(0) * shape(1)) or t*10
-      )
-    ))),
+      field('size', alias($._static_array_size_expr, $.expression))  // Comptime expression (no blocks): t*n, t*(shape(0) * shape(1)), t*10
+    )),
+
+    // Types that can be used as the base of a static array (excludes variadic and static_array to prevent nesting)
+    _non_array_type: $ => choice(
+      $.primitive_type,
+      $.struct_type,
+      $.enum_type,
+      $.tuple_type,
+      $.generic_type,
+      $.sized_type,
+      $.type_parameter_ref
+    ),
+
+    // Static array size expressions - excludes blocks to avoid ambiguity with function bodies
+    _static_array_size_expr: $ => choice(
+      $.comptime_expression,
+      $.assignment_expression,
+      $.binary_expression,
+      $.unary_expression,
+      $.call_expression,
+      $.member_match_expression,
+      $.method_call,
+      $.field_access,
+      $.namespace_access,
+      $.struct_expression,
+      $.enum_expression,
+      $.interpolated_string,
+      $.closure,
+      // $.block,  // Explicitly excluded to avoid ambiguity
+      $.parenthesized_expression,
+      $.loop_variable,
+      $.value_identifier,
+      $.type_identifier,
+      $.number_literal,
+      $.string_literal,
+      $.rune_literal
+    ),
 
     // Struct definition
     struct_definition: $ => prec.dynamic(2, seq(
