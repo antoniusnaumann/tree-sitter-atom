@@ -1164,7 +1164,7 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "_assignable_expression"
+                  "name": "expression"
                 }
               ]
             },
@@ -1194,17 +1194,13 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "_assignable_expression"
+                  "name": "expression"
                 }
               ]
             }
           ]
         }
       ]
-    },
-    "_assignable_expression": {
-      "type": "SYMBOL",
-      "name": "expression"
     },
     "constant_declaration": {
       "type": "SEQ",
@@ -2531,19 +2527,6 @@
         }
       ]
     },
-    "constructor_expression": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "struct_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "enum_expression"
-        }
-      ]
-    },
     "binary_expression": {
       "type": "CHOICE",
       "members": [
@@ -3180,7 +3163,7 @@
       }
     },
     "method_call": {
-      "type": "PREC",
+      "type": "PREC_RIGHT",
       "value": 13,
       "content": {
         "type": "SEQ",
@@ -3216,6 +3199,18 @@
           {
             "type": "STRING",
             "value": ")"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "block"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -4003,6 +3998,9 @@
     ],
     [
       "call_expression"
+    ],
+    [
+      "method_call"
     ]
   ],
   "precedences": [],

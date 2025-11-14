@@ -62,7 +62,8 @@ module.exports = grammar({
     [$._field_or_param, $.binary_expression],  // comma in default values vs field separator
     [$.struct_field_init, $.binary_expression],  // comma in field init vs field separator
     [$.call_expression, $.struct_expression],  // trailing closure vs struct init
-    [$.call_expression]  // trailing closure vs call followed by block
+    [$.call_expression],  // trailing closure vs call followed by block
+    [$.method_call]  // trailing closure vs method call followed by block
   ],
 
   rules: {
@@ -243,14 +244,11 @@ module.exports = grammar({
         prec.dynamic(-1, seq($.value_identifier, ',', commaSep($.value_identifier)))
       ),
       choice(
-        seq(':', $.type, '=', $._assignable_expression),
+        seq(':', $.type, '=', $.expression),
         prec(-1, seq(':', $.type)),  // Zero-value initialization (lower precedence to prefer longer match)
-        seq(':=', $._assignable_expression)
+        seq(':=', $.expression)
       )
     ),
-
-    // Expression that can be assigned (comma operator creates tuples)
-    _assignable_expression: $ => $.expression,
 
     // Constant declaration
     constant_declaration: $ => seq(
@@ -360,12 +358,6 @@ module.exports = grammar({
       $.rune_literal
     ),
 
-    // Constructor expressions (handled separately)
-    constructor_expression: $ => choice(
-      $.struct_expression,
-      $.enum_expression
-    ),
-
     binary_expression: $ => choice(
       ...[
         [',', PREC.COMMA],       // Tuple creation - lowest precedence
@@ -409,13 +401,14 @@ module.exports = grammar({
       optional($.block)  // Trailing closure syntax
     ))),
 
-    method_call: $ => prec(PREC.CALL, seq(
+    method_call: $ => prec.right(PREC.CALL, seq(
       $.expression,
       '.',
       $.value_identifier,
       '(',
       optional($.expression),  // Comma operator handles multiple arguments
-      ')'
+      ')',
+      optional($.block)  // Trailing closure syntax
     )),
 
     member_match_expression: $ => prec(PREC.CALL, seq(
