@@ -91,10 +91,6 @@
           "named": true
         },
         {
-          "type": "parameter",
-          "named": true
-        },
-        {
           "type": "return_type",
           "named": true
         },
@@ -1268,10 +1264,6 @@
   },
   {
     "type": "Void",
-    "named": false
-  },
-  {
-    "type": "\\",
     "named": false
   },
   {

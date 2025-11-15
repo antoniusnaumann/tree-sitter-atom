@@ -64,7 +64,11 @@ module.exports = grammar({
     [$.call_expression],  // trailing closure vs call followed by block
     [$.method_call],  // trailing closure vs method call followed by block
     [$._static_array_size_expr, $.expression],  // static array size vs general expression
-    [$.type, $._non_array_type]  // primitive_type etc. can be either type or _non_array_type
+    [$.type, $._non_array_type],  // primitive_type etc. can be either type or _non_array_type
+    [$.closure, $.expression],  // closure vs expression when identifier followed by type/block
+    [$.closure, $.parenthesized_expression],  // closure () Type { vs parenthesized () followed by type
+    [$._static_array_size_expr, $.closure],  // array size vs closure in type context
+    [$._static_array_size_expr, $.expression, $.closure]  // three-way conflict in array type context
   ],
 
   rules: {
@@ -536,25 +540,13 @@ module.exports = grammar({
       optional(seq('(', optional($.expression), ')'))  // Comma operator handles multiple args
     )),
 
-    closure: $ => seq(
-      '\\',
-      choice(
-        // Single parameter without parens: \x { x + 1 }
-        $.value_identifier,
-        // Multiple parameters with parens: \(x, y) { x + y }
-        // Or typed parameters: \(x Int, y Int) { x + y }
-        seq(
-          '(',
-          optional(commaSep(choice(
-            $.parameter,  // Full parameter: name Type
-            $.value_identifier  // Just name (type inferred)
-          ))),
-          ')'
-        )
-      ),
+    closure: $ => prec.dynamic(2, seq(
+      '(',
+      optional(commaSep($.value_identifier)),
+      ')',
       optional($.return_type),
       $.block
-    ),
+    )),
 
     // Test blocks
     test_block: $ => seq(

@@ -1,0 +1,46 @@
+// Edge cases for closure vs tuple disambiguation
+
+main() {
+    // Edge case 1: Tuple followed by separate block (NOT a closure)
+    // The comma after (a, b) means these are TWO arguments to foo
+    // foo((a, b), { code })
+    
+    // Edge case 2: Closure with variables that exist in outer scope
+    x := 10
+    y := 20
+    // This MUST be a closure because block follows ), parameters shadow outer scope
+    func := (x, y) { x + y }
+    result := func(5, 3)  // Should use closure parameters, result = 8
+    
+    // Edge case 3: Just a parenthesized expression (no block)
+    value := (x + y)  // Uses outer x, y: 10 + 20 = 30
+    
+    // Edge case 4: Closure parameter named 'int' (lowercase, not a type)
+    weird := (int) { int + 1 }
+    
+    // Edge case 5: Empty parens followed by block = zero-param closure
+    make_closure := () { 42 }
+    
+    // Edge case 6: Empty parens NOT followed by block = empty tuple
+    empty := ()
+    
+    // Edge case 7: Trailing closure in function call
+    arr: Int* = (1, 2, 3)
+    mapped := map(arr, (x) { x * 2 })
+    
+    // Edge case 8: Multiple params in trailing closure
+    reduced := reduce(arr, 0, (acc, x) { acc + x })
+    
+    // Edge case 9: Nested closures
+    adder := (x) { (y) { x + y } }
+    add5 := adder(5)
+    result2 := add5(3)  // Should be 8
+    
+    // Edge case 10: Closure with return type annotation
+    typed := (a, b, c) String {
+        match(c) {
+            True { b }
+            False { "default" }
+        }
+    }
+}

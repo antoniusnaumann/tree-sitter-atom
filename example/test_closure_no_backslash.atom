@@ -1,0 +1,65 @@
+// Test file for closure syntax without backslash
+
+main() {
+    // Test 1: Single parameter closure
+    add_one := (x) { x + 1 }
+    
+    // Test 2: Single parameter closure (type inferred)
+    double := (x) { x * 2 }
+    
+    // Test 3: Multiple parameters without types
+    add := (x, y) { x + y }
+    
+    // Test 4: Multiple parameters (types inferred)
+    concat := (x, y) { x ~ y }
+    
+    // Test 5: Closure with return type  
+    multiply := (a, b) Int { a * b }
+    
+    // Test 6: Zero parameter closure
+    get_five := () { 5 }
+    
+    // Test 7: Zero parameter closure with return type
+    get_ten := () Int { 10 }
+    
+    // Test 8: Tuple creation (NOT a closure - no block after)
+    pair := (1, 2)
+    triple := (1, 2, 3)
+    
+    // Test 9: Parenthesized expression (NOT a closure)
+    result := (x + y) * 2
+    
+    // Test 10: Closure used in function call
+    numbers: Int* = (1, 2, 3, 4, 5)
+    doubled := map(numbers, (x) { x * 2 })
+    
+    // Test 11: Multi-param closure in function call
+    sum := reduce(numbers, 0, (acc, x) { acc + x })
+    
+    // Test 12: Tuple followed by separate block (NOT a closure)
+    // This is a tuple expression followed by a block expression
+    {
+        temp := (a, b)
+        {
+            // separate block
+            print(temp)
+        }
+    }
+    
+    // Test 13: Closure with nested blocks
+    complex := (x, y) {
+        {
+            temp := x + y
+            temp * 2
+        }
+    }
+    
+    // Test 14: Existing variables with same names
+    x := 10
+    y := 20
+    // This should be a closure with parameters x, y (shadowing outer scope)
+    func := (x, y) { x + y }
+    
+    // Test 15: Single param closure in trailing position
+    filter(numbers, (x) { x > 3 })
+}
