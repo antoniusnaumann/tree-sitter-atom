@@ -351,13 +351,11 @@ Struct with custom struct type field
       (struct_field
         (value_identifier)
         (type
-          (struct_type
-            (type_identifier))))
+          (type_identifier)))
       (struct_field
         (value_identifier)
         (type
-          (struct_type
-            (type_identifier)))))))
+          (type_identifier))))))
 
 ==================
 Nested generic types

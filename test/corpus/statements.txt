@@ -405,8 +405,7 @@ UFCS match statement
     (parameter
       (value_identifier)
       (type
-        (struct_type
-          (type_identifier))))
+        (type_identifier)))
     (block
       (expression
         (call_expression

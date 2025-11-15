@@ -211,21 +211,6 @@
     }
   },
   {
-    "type": "enum_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "type_identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -898,21 +883,6 @@
     }
   },
   {
-    "type": "struct_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "type_identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "test_block",
     "named": true,
     "fields": {},
@@ -955,10 +925,6 @@
       "required": true,
       "types": [
         {
-          "type": "enum_type",
-          "named": true
-        },
-        {
           "type": "generic_type",
           "named": true
         },
@@ -975,11 +941,11 @@
           "named": true
         },
         {
-          "type": "struct_type",
+          "type": "tuple_type",
           "named": true
         },
         {
-          "type": "tuple_type",
+          "type": "type_identifier",
           "named": true
         },
         {

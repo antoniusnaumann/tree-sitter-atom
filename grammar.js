@@ -38,7 +38,6 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.struct_type, $.enum_type],
     [$.struct_definition, $.enum_definition],
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
@@ -101,8 +100,7 @@ module.exports = grammar({
     // Types
     type: $ => choice(
       $.primitive_type,
-      $.struct_type,
-      $.enum_type,
+      $.type_identifier,
       $.tuple_type,
       $.generic_type,
       $.variadic_type,
@@ -128,10 +126,6 @@ module.exports = grammar({
       $.number_literal,
       ')'
     ),
-
-    struct_type: $ => $.type_identifier,
-
-    enum_type: $ => $.type_identifier,
     
     // Type parameter reference (lowercase identifier in type position)
     type_parameter_ref: $ => $.value_identifier,
@@ -169,8 +163,7 @@ module.exports = grammar({
     // Types that can be used as the base of a static array (excludes variadic and static_array to prevent nesting)
     _non_array_type: $ => choice(
       $.primitive_type,
-      $.struct_type,
-      $.enum_type,
+      $.type_identifier,
       $.tuple_type,
       $.generic_type,
       $.sized_type,

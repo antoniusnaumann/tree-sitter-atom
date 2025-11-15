@@ -91,11 +91,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "struct_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "enum_type"
+          "name": "type_identifier"
         },
         {
           "type": "SYMBOL",
@@ -193,14 +189,6 @@
           "value": ")"
         }
       ]
-    },
-    "struct_type": {
-      "type": "SYMBOL",
-      "name": "type_identifier"
-    },
-    "enum_type": {
-      "type": "SYMBOL",
-      "name": "type_identifier"
     },
     "type_parameter_ref": {
       "type": "SYMBOL",
@@ -483,11 +471,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "struct_type"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "enum_type"
+          "name": "type_identifier"
         },
         {
           "type": "SYMBOL",
@@ -4029,10 +4013,6 @@
     }
   ],
   "conflicts": [
-    [
-      "struct_type",
-      "enum_type"
-    ],
     [
       "struct_definition",
       "enum_definition"
