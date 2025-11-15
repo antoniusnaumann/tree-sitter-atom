@@ -201,11 +201,10 @@
           (value_identifier) @namespace))
       (value_identifier) @function.call)))
 
-; Type annotations
-(struct_type
-  (type_identifier) @type)
-
-(enum_type
+; Type annotations - user-defined types (structs and enums)
+; Note: We don't need a separate capture since type_identifier in type position
+; is already a type. The specific pattern below ensures we highlight them.
+(type
   (type_identifier) @type)
 
 ; Type parameters - lowercase identifiers in type positions
