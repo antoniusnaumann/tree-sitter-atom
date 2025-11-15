@@ -34,7 +34,9 @@ module.exports = grammar({
 
   externals: $ => [
     $.string_fragment,
-    $.interpolation_start
+    $.interpolation_start,
+    $._automatic_semicolon,
+    $._static_array_size_identifier
   ],
 
   conflicts: $ => [
@@ -163,7 +165,7 @@ module.exports = grammar({
       seq(choice($.value_identifier, $.type_identifier), '=', $.type)  // With default: e = String
     ),
 
-    variadic_type: $ => prec.dynamic(-1, prec.left(1, seq(
+    variadic_type: $ => prec.dynamic(2, prec.left(1, seq(
       $.type,
       choice('*', '+')
     ))),
@@ -185,29 +187,14 @@ module.exports = grammar({
       $.type_parameter_ref
     ),
 
-    // Static array size expressions - excludes blocks to avoid ambiguity with function bodies
+    // Static array size expressions - identifier immediately after * (no whitespace)
+    // or parenthesized expression, or literal
     _static_array_size_expr: $ => choice(
       $.comptime_expression,
-      $.assignment_expression,
-      $.binary_expression,
-      $.unary_expression,
-      $.call_expression,
-      $.member_match_expression,
-      $.method_call,
-      $.field_access,
-      $.namespace_access,
-      $.struct_expression,
-      $.enum_expression,
-      $.interpolated_string,
-      $.closure,
-      // $.block,  // Explicitly excluded to avoid ambiguity
-      $.parenthesized_expression,
-      $.loop_variable,
-      $.value_identifier,
-      $.type_identifier,
+      $._static_array_size_identifier,  // Identifier with NO whitespace after *: t*n
+      $.parenthesized_expression,  // Complex expressions: t*(n+1)
       $.number_literal,
-      $.string_literal,
-      $.rune_literal
+      $.loop_variable
     ),
 
     // Struct definition
@@ -303,19 +290,21 @@ module.exports = grammar({
     // Block
     block: $ => seq(
       '{',
-      repeat(choice($.statement, $.expression)),
+      repeat(choice($.statement, seq($.expression, optional($._semicolon)))),
       '}'
     ),
 
+    // Semicolon: explicit or automatic
+    _semicolon: $ => choice(';', $._automatic_semicolon),
+
     // Statements
     statement: $ => choice(
-      $.variable_declaration,
-      $.assignment_expression,  // Assignments can be statements
-      $.expression_statement,
+      prec(1, seq($.variable_declaration, optional($._semicolon))),  // Prefer ending with semicolon but allow without
+      seq($.assignment_expression, optional($._semicolon)),
       $.match_statement
     ),
 
-    expression_statement: $ => seq($.expression, ';'),
+
 
     // Match
     match_statement: $ => seq(
