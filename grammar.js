@@ -106,6 +106,7 @@ module.exports = grammar({
       $.variadic_type,
       $.static_array_type,
       $.sized_type,
+      $.function_type,
       $.type_parameter_ref  // Allow lowercase type parameters in type position
     ),
 
@@ -125,6 +126,15 @@ module.exports = grammar({
       '(',
       $.number_literal,
       ')'
+    ),
+
+    function_type: $ => seq(
+      '(',
+      optional(commaSep($.type)),
+      ')',
+      '{',
+      optional($.type),
+      '}'
     ),
     
     // Type parameter reference (lowercase identifier in type position)
@@ -167,6 +177,7 @@ module.exports = grammar({
       $.tuple_type,
       $.generic_type,
       $.sized_type,
+      $.function_type,
       $.type_parameter_ref
     ),
 
@@ -490,7 +501,7 @@ module.exports = grammar({
     
     _interpolation_start: $ => $.interpolation_start,
 
-    parenthesized_expression: $ => seq('(', $.expression, ')'),
+    parenthesized_expression: $ => seq('(', optional($.expression), ')'),
 
     number_literal: $ => choice(
       /0x[0-9a-fA-F]+/,           // Hexadecimal: 0xFF, 0xDEADBEEF
@@ -526,9 +537,21 @@ module.exports = grammar({
     )),
 
     closure: $ => seq(
-      '(',
-      optional(commaSep($.parameter)),
-      ')',
+      '\\',
+      choice(
+        // Single parameter without parens: \x { x + 1 }
+        $.value_identifier,
+        // Multiple parameters with parens: \(x, y) { x + y }
+        // Or typed parameters: \(x Int, y Int) { x + y }
+        seq(
+          '(',
+          optional(commaSep(choice(
+            $.parameter,  // Full parameter: name Type
+            $.value_identifier  // Just name (type inferred)
+          ))),
+          ')'
+        )
+      ),
       optional($.return_type),
       $.block
     ),
