@@ -209,7 +209,7 @@ module.exports = grammar({
       optional(seq(commaSep($.type_parameter), ';')),
       optional(seq(
         alias($._field_or_param, $.struct_field),
-        repeat(seq(',', alias($._field_or_param, $.struct_field))),
+        repeat(seq(choice(',', $._automatic_semicolon), alias($._field_or_param, $.struct_field))),
         optional(',')
       )),
       ')'
