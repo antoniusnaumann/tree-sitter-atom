@@ -334,12 +334,31 @@ module.exports = grammar({
     )),
 
     pattern: $ => choice(
+      $.pattern_alternative,  // Pattern with | operator (highest precedence)
       prec.dynamic(2, seq($.type_identifier, '(', optional(commaSep($.pattern)), ')')),  // Enum destructuring - prefer this
       $.value_identifier,
       $.type_identifier,
       $.number_literal,
       $.string_literal,
       $.pattern_guard,  // Guard expressions like: b & 0xFF == 0
+      $.parenthesized_expression,
+      '_'
+    ),
+
+    // Pattern alternatives - multiple patterns separated by |
+    // This is different from bitwise OR in pattern_guard
+    pattern_alternative: $ => prec.left(1, seq(
+      $._simple_pattern,
+      repeat1(seq('|', $._simple_pattern))
+    )),
+
+    // Simple patterns that can be used in alternatives (no nested alternatives)
+    _simple_pattern: $ => choice(
+      prec.dynamic(2, seq($.type_identifier, '(', optional(commaSep($.pattern)), ')')),  // Enum destructuring
+      $.value_identifier,
+      $.type_identifier,
+      $.number_literal,
+      $.string_literal,
       $.parenthesized_expression,
       '_'
     ),
