@@ -581,8 +581,13 @@
           "name": "comptime_expression"
         },
         {
-          "type": "SYMBOL",
-          "name": "_static_array_size_identifier"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_static_array_size_identifier"
+          },
+          "named": true,
+          "value": "value_identifier"
         },
         {
           "type": "SYMBOL",
@@ -1430,25 +1435,8 @@
                 "name": "statement"
               },
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "expression"
-                  },
-                  {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "_semicolon"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "expression"
               }
             ]
           }
@@ -1522,8 +1510,29 @@
           ]
         },
         {
+          "type": "PREC_DYNAMIC",
+          "value": 2,
+          "content": {
+            "type": "SYMBOL",
+            "name": "match_statement"
+          }
+        },
+        {
           "type": "SYMBOL",
-          "name": "match_statement"
+          "name": "expression_statement"
+        }
+      ]
+    },
+    "expression_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
         }
       ]
     },

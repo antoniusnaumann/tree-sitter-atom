@@ -194,7 +194,7 @@ module.exports = grammar({
     // or parenthesized expression, or literal
     _static_array_size_expr: $ => choice(
       $.comptime_expression,
-      $._static_array_size_identifier,  // Identifier with NO whitespace after *: t*n
+      alias($._static_array_size_identifier, $.value_identifier),  // Wrap as value_identifier
       $.parenthesized_expression,  // Complex expressions: t*(n+1)
       $.number_literal,
       $.loop_variable
@@ -297,7 +297,10 @@ module.exports = grammar({
     // Block
     block: $ => seq(
       '{',
-      repeat(choice($.statement, seq($.expression, optional($._semicolon)))),
+      repeat(choice(
+        $.statement,
+        $.expression  // Final expression without semicolon
+      )),
       '}'
     ),
 
@@ -308,8 +311,11 @@ module.exports = grammar({
     statement: $ => choice(
       prec(1, seq($.variable_declaration, optional($._semicolon))),  // Prefer ending with semicolon but allow without
       seq($.assignment_expression, optional($._semicolon)),
-      $.match_statement
+      prec.dynamic(2, $.match_statement),  // Higher precedence than match_expression
+      $.expression_statement
     ),
+
+    expression_statement: $ => seq($.expression, $._semicolon),  // Requires semicolon
 
 
 

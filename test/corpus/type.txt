@@ -504,11 +504,10 @@ Static array with comptime expression
 
 Matrix(
   shape (Int, Int);
-  fields Int*shape(0) * shape(1)
+  fields Int*(shape(0) * shape(1))
 )
 
 ---
-
 (source_file
   (struct_definition
     (type_identifier)
@@ -528,20 +527,21 @@ Matrix(
             (type
               (primitive_type))
             (expression
-              (binary_expression
+              (parenthesized_expression
                 (expression
-                  (call_expression
+                  (binary_expression
                     (expression
-                      (value_identifier))
+                      (call_expression
+                        (expression
+                          (value_identifier))
+                        (expression
+                          (number_literal))))
                     (expression
-                      (number_literal))))
-                (expression
-                  (call_expression
-                    (expression
-                      (value_identifier))
-                    (expression
-                      (number_literal))))))))))))
-
+                      (call_expression
+                        (expression
+                          (value_identifier))
+                        (expression
+                          (number_literal))))))))))))))
 ==================
 Static array with numeric literal
 ==================
