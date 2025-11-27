@@ -57,6 +57,7 @@ module.exports = grammar({
     [$.block],
     [$.struct_field_init, $.expression],
     [$.statement, $.expression],  // assignment_expression can be both
+    [$.match_statement, $.match_expression],  // match can be both statement and expression
     [$.pattern, $.expression],  // patterns can be expressions (for match guards)
     [$.pattern, $.enum_expression],  // enum destructuring vs enum construction
     [$.pattern, $.call_expression],  // enum destructuring vs function call
@@ -70,7 +71,8 @@ module.exports = grammar({
     [$.closure, $.expression],  // closure vs expression when identifier followed by type/block
     [$.closure, $.parenthesized_expression],  // closure () Type { vs parenthesized () followed by type
     [$._static_array_size_expr, $.closure],  // array size vs closure in type context
-    [$._static_array_size_expr, $.expression, $.closure]  // three-way conflict in array type context
+    [$._static_array_size_expr, $.expression, $.closure],  // three-way conflict in array type context
+    [$.closure_parameter, $.expression]  // closure parameter with type vs expression
   ],
 
   rules: {
@@ -313,7 +315,11 @@ module.exports = grammar({
       $.expression,
       ')',
       '{',
-      repeat($.match_arm),
+      optional(seq(
+        $.match_arm,
+        repeat(seq(optional(','), $.match_arm)),
+        optional(',')
+      )),
       '}'
     ),
 
@@ -371,6 +377,7 @@ module.exports = grammar({
       $.binary_expression,
       $.unary_expression,
       $.call_expression,
+      $.match_expression,
       $.member_match_expression,
       $.method_call,
       $.field_access,
@@ -379,9 +386,9 @@ module.exports = grammar({
       $.enum_expression,
       $.interpolated_string,
       // tuple_expression removed - tuples are created by comma binary operator
-      $.closure,
       $.block,
-      $.parenthesized_expression,
+      $.parenthesized_expression,  // Moved before closure to prefer it
+      $.closure,  // Moved after parenthesized_expression
       $.loop_variable,
       $.value_identifier,
       $.type_identifier,
@@ -458,6 +465,20 @@ module.exports = grammar({
       '}'
     )),
 
+    match_expression: $ => seq(
+      'match',
+      '(',
+      $.expression,
+      ')',
+      '{',
+      optional(seq(
+        $.match_arm,
+        repeat(seq(optional(','), $.match_arm)),
+        optional(',')
+      )),
+      '}'
+    ),
+
     field_access: $ => prec(PREC.FIELD, seq(
       $.expression,
       '.',
@@ -494,6 +515,7 @@ module.exports = grammar({
     
     _interpolation_start: $ => $.interpolation_start,
 
+    // Parenthesized expressions - prefer this over closure when ambiguous
     parenthesized_expression: $ => seq('(', optional($.expression), ')'),
 
     number_literal: $ => choice(
@@ -529,13 +551,21 @@ module.exports = grammar({
       optional(seq('(', optional($.expression), ')'))  // Comma operator handles multiple args
     )),
 
-    closure: $ => prec.dynamic(2, seq(
+    // Closure MUST have a block after the parameter list
+    // Use dynamic precedence to prefer closure interpretation when block follows
+    closure: $ => prec.dynamic(1, seq(
       '(',
-      optional(commaSep($.value_identifier)),
+      optional(commaSep($.closure_parameter)),
       ')',
       optional($.return_type),
       $.block
     )),
+
+    // Closure parameters: either just an identifier, or identifier with type
+    closure_parameter: $ => choice(
+      seq($.value_identifier, $.type),  // Typed parameter
+      $.value_identifier  // Untyped parameter
+    ),
 
     // Test blocks
     test_block: $ => seq(
