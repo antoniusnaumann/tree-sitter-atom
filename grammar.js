@@ -19,7 +19,8 @@ const PREC = {
   ENUM: 16,
   FIELD_DEF: 17,
   TYPE: 18,
-  DECLARATION: 19
+  DECLARATION: 19,
+  REFERENCE: 20    // & reference operator (highest precedence - binds very tightly)
 };
 
 module.exports = grammar({
@@ -116,6 +117,7 @@ module.exports = grammar({
       $.static_array_type,
       $.sized_type,
       $.function_type,
+      $.reference_type,
       $.type_parameter_ref  // Allow lowercase type parameters in type position
     ),
 
@@ -144,6 +146,11 @@ module.exports = grammar({
       '{',
       optional($.type),
       '}'
+    ),
+
+    reference_type: $ => seq(
+      '&',
+      $.type
     ),
     
     // Type parameter reference (lowercase identifier in type position)
@@ -406,6 +413,7 @@ module.exports = grammar({
       $.assignment_expression,
       $.binary_expression,
       $.unary_expression,
+      $.reference_expression,
       $.call_expression,
       $.match_expression,
       $.member_match_expression,
@@ -459,6 +467,11 @@ module.exports = grammar({
 
     unary_expression: $ => prec(PREC.UNARY, seq(
       choice('-', '!', '~'),
+      $.expression
+    )),
+
+    reference_expression: $ => prec(PREC.REFERENCE, seq(
+      '&',
       $.expression
     )),
 

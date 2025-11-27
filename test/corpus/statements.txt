@@ -804,3 +804,103 @@ test() {
                         (number_literal))
                       (expression
                         (number_literal)))))))))))))
+
+==================
+Reference parameter type
+==================
+
+copy_int(dest &Int, src Int) {
+    dest = src
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (parameter
+      (value_identifier)
+      (type
+        (reference_type
+          (type
+            (primitive_type)))))
+    (parameter
+      (value_identifier)
+      (type
+        (primitive_type)))
+    (block
+      (expression
+        (assignment_expression
+          (expression
+            (value_identifier))
+          (expression
+            (value_identifier)))))))
+
+==================
+Reference expression in function call
+==================
+
+main() {
+    x := 0;
+    y := 5;
+    copy(&x, y)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (number_literal))))
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (number_literal))))
+      (expression
+        (call_expression
+          (expression
+            (value_identifier))
+          (expression
+            (binary_expression
+              (expression
+                (reference_expression
+                  (expression
+                    (value_identifier))))
+              (expression
+                (value_identifier)))))))))
+
+==================
+Reference expression with UFCS
+==================
+
+main() {
+    x := 0;
+    &x.copy(5)
+}
+
+---
+
+(source_file
+  (function_definition
+    (value_identifier)
+    (block
+      (statement
+        (variable_declaration
+          (value_identifier)
+          (expression
+            (number_literal))))
+      (expression
+        (method_call
+          (expression
+            (reference_expression
+              (expression
+                (value_identifier))))
+          (value_identifier)
+          (expression
+            (number_literal)))))))

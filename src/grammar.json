@@ -119,6 +119,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "reference_type"
+        },
+        {
+          "type": "SYMBOL",
           "name": "type_parameter_ref"
         }
       ]
@@ -265,6 +269,19 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "reference_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "&"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type"
         }
       ]
     },
@@ -2874,6 +2891,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "reference_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "call_expression"
         },
         {
@@ -3524,6 +3545,23 @@
                 "value": "~"
               }
             ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        ]
+      }
+    },
+    "reference_expression": {
+      "type": "PREC",
+      "value": 20,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "&"
           },
           {
             "type": "SYMBOL",

@@ -302,6 +302,10 @@
           "named": true
         },
         {
+          "type": "reference_expression",
+          "named": true
+        },
+        {
           "type": "rune_literal",
           "named": true
         },
@@ -749,6 +753,36 @@
     "fields": {}
   },
   {
+    "type": "reference_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "reference_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "return_type",
     "named": true,
     "fields": {},
@@ -1030,6 +1064,10 @@
         },
         {
           "type": "primitive_type",
+          "named": true
+        },
+        {
+          "type": "reference_type",
           "named": true
         },
         {
