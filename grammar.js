@@ -44,6 +44,7 @@ module.exports = grammar({
     [$.struct_field, $.parameter],
     [$.struct_field_list, $.enum_definition],
     [$.type_parameter, $.enum_case],
+    [$.type, $.enum_case],  // type identifier vs enum case with separators
     [$.type_parameter, $.parameter],
     [$.type_parameter, $._field_or_param],
     [$.primitive_type, $.sized_type],
@@ -236,7 +237,11 @@ module.exports = grammar({
       $.type_identifier,
       '(',
       optional(seq(commaSep($.type_parameter), ';')),
-      repeat($.enum_case),
+      optional(seq(
+        $.enum_case,
+        repeat(seq(choice(',', $._automatic_semicolon), $.enum_case)),
+        optional(',')
+      )),
       ')'
     ),
 
