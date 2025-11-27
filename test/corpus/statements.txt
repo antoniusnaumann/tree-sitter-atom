@@ -231,19 +231,21 @@ sum(values Int*) Int {
           (value_identifier)
           (expression
             (number_literal))))
-      (expression
-        (call_expression
+      (statement
+        (expression_statement
           (expression
-            (value_identifier))
-          (expression
-            (value_identifier))
-          (block
-            (expression
-              (assignment_expression
+            (call_expression
+              (expression
+                (value_identifier))
+              (expression
+                (value_identifier))
+              (block
                 (expression
-                  (value_identifier))
-                (expression
-                  (loop_variable)))))))
+                  (assignment_expression
+                    (expression
+                      (value_identifier))
+                    (expression
+                      (loop_variable)))))))))
       (expression
         (value_identifier)))))
 
@@ -621,26 +623,32 @@ test() {
   (function_definition
     (value_identifier)
     (block
-      (expression
-        (call_expression
+      (statement
+        (expression_statement
           (expression
-            (value_identifier))))
-      (expression
-        (call_expression
-          (expression
-            (value_identifier))
-          (expression
-            (number_literal))))
-      (expression
-        (call_expression
-          (expression
-            (value_identifier))
-          (expression
-            (binary_expression
+            (call_expression
               (expression
-                (number_literal))
+                (value_identifier))))))
+      (statement
+        (expression_statement
+          (expression
+            (call_expression
+              (expression
+                (value_identifier))
               (expression
                 (number_literal))))))
+      (statement
+        (expression_statement
+          (expression
+            (call_expression
+              (expression
+                (value_identifier))
+              (expression
+                (binary_expression
+                  (expression
+                    (number_literal))
+                  (expression
+                    (number_literal))))))))
       (expression
         (call_expression
           (expression
