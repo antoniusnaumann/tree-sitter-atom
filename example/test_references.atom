@@ -1,0 +1,30 @@
+// Test file for new reference syntax: &var Type instead of var &Type
+
+// Function with reference parameters
+swap(&a Int, &b Int) {
+    temp := a
+    a = b
+    b = temp
+}
+
+// Mixed reference and non-reference parameters
+update(&target Int, value Int) {
+    target = value
+}
+
+// Multiple reference parameters
+combine(&x Int, &y Int, &z Int) {
+    x = x + y + z
+}
+
+// Main function using references
++main() Int {
+    a := 10
+    b := 20
+    swap(&a, &b)
+    
+    c := 30
+    update(&c, 42)
+    
+    0
+}

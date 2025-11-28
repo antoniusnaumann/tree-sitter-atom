@@ -1,0 +1,34 @@
+// Comparison of reference syntax
+
+// CORRECT SYNTAX: &var Type
+// The & is attached to the variable name
+correct_swap(&a Int, &b Int) {
+    temp := a
+    a = b
+    b = temp
+}
+
+// Another example showing the same syntax
+another_swap(&a Int, &b Int) {
+    temp := a
+    a = b
+    b = temp
+}
+
+// Verification that new syntax works in various contexts
+
+// Closure with reference parameter
+test_closure() {
+    f := (&x Int) {
+        x = x + 1
+    }
+}
+
+// Struct field with reference (if supported)
+// Point(&x Int, &y Int)
+
+// Multiple references mixed with regular params
+mixed(&ref1 Int, normal Int, &ref2 Int) {
+    ref1 = normal
+    ref2 = normal
+}

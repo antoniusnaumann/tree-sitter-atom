@@ -228,13 +228,13 @@ module.exports = grammar({
     visibility: $ => choice('+', '-'),
 
     _field_or_param: $ => choice(
-      seq($.value_identifier, $.type),
-      seq($.value_identifier, $.type, '=', $.expression),
+      seq(optional('&'), $.value_identifier, $.type),
+      seq(optional('&'), $.value_identifier, $.type, '=', $.expression),
       seq('..', $.type_identifier)
     ),
 
     struct_field: $ => prec.dynamic(2, choice(
-      seq($.value_identifier, $.type),
+      seq(optional('&'), $.value_identifier, $.type),
       seq('..', $.type_identifier)
     )),
 
@@ -274,8 +274,8 @@ module.exports = grammar({
     )),
 
     parameter: $ => prec.dynamic(-1, prec(PREC.TYPE, choice(
-      seq($.value_identifier, $.type),
-      seq($.value_identifier, $.type, '=', $.expression)
+      seq(optional('&'), $.value_identifier, $.type),
+      seq(optional('&'), $.value_identifier, $.type, '=', $.expression)
     ))),
 
     return_type: $ => $.type,
@@ -606,7 +606,7 @@ module.exports = grammar({
 
     // Closure parameters: either just an identifier, or identifier with type
     closure_parameter: $ => choice(
-      seq($.value_identifier, $.type),  // Typed parameter
+      seq(optional('&'), $.value_identifier, $.type),  // Typed parameter
       $.value_identifier  // Untyped parameter
     ),
 
