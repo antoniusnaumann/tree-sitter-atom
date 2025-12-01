@@ -714,6 +714,10 @@
         "required": true,
         "types": [
           {
+            "type": "loop_variable",
+            "named": true
+          },
+          {
             "type": "number_literal",
             "named": true
           },
@@ -731,6 +735,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "loop_variable",
+            "named": true
+          },
           {
             "type": "number_literal",
             "named": true

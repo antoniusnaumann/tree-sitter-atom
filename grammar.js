@@ -400,9 +400,9 @@ module.exports = grammar({
         ['~', PREC.CONCAT]
       ].map(([operator, precedence]) =>
         prec.left(precedence, seq(
-          field('left', choice($.value_identifier, $.number_literal, $.pattern_guard)),
+          field('left', choice($.value_identifier, $.number_literal, $.loop_variable, $.pattern_guard)),
           operator,
-          field('right', choice($.value_identifier, $.number_literal, $.pattern_guard))
+          field('right', choice($.value_identifier, $.number_literal, $.loop_variable, $.pattern_guard))
         ))
       )
     )),
