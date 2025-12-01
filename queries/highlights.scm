@@ -171,6 +171,10 @@
 (match_statement
   "match" @function.call)
 
+; Match as a function call (expression form)
+(match_expression
+  "match" @function.call)
+
 ; Match as a function call (UFCS form)
 (member_match_expression
   "match" @function.call)
