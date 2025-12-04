@@ -436,6 +436,25 @@
     }
   },
   {
+    "type": "import_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "value_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "interpolated_string",
     "named": true,
     "fields": {},
@@ -843,6 +862,10 @@
         },
         {
           "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "import_statement",
           "named": true
         },
         {
@@ -1311,6 +1334,14 @@
   },
   {
     "type": "::",
+    "named": false
+  },
+  {
+    "type": "::(",
+    "named": false
+  },
+  {
+    "type": "::*",
     "named": false
   },
   {

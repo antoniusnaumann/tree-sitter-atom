@@ -87,6 +87,7 @@ module.exports = grammar({
       $.variable_declaration,
       $.constant_declaration,
       $.test_block,
+      $.import_statement,
       $.comment
     ),
 
